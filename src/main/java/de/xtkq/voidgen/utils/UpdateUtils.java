@@ -1,12 +1,14 @@
 package de.xtkq.voidgen.utils;
 
 import com.google.gson.Gson;
+import de.xtkq.voidgen.VoidGen;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
 
 public class UpdateUtils {
@@ -34,7 +36,7 @@ public class UpdateUtils {
     }
 
     public void checkForUpdates() {
-        this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
+        VoidGen.morePaperLib.scheduling().asyncScheduler().runAtFixedRate(() -> {
             Gson gson = new Gson();
             try {
                 URL url = new URL(String.format(GITHUB_API, this.plugin.getName()));
@@ -56,8 +58,8 @@ public class UpdateUtils {
                 }
             } catch (Exception ignored) {
             }
-            // Start 2min after server start and repeat every 3h
-        }, 2400L, 216000L);
+
+        }, Duration.ofMillis(2400L * 50L), Duration.ofMillis(216000L * 50L));
     }
 
     /**

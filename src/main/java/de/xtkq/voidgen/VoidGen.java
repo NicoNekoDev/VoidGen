@@ -11,10 +11,13 @@ import de.xtkq.voidgen.utils.UpdateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.arim.morepaperlib.MorePaperLib;
 
 import java.util.Arrays;
 
 public final class VoidGen extends JavaPlugin {
+
+    public static MorePaperLib morePaperLib;
 
     private ChunkGenVersion chunkGenVersion;
     private EventManager eventManager;
@@ -35,6 +38,7 @@ public final class VoidGen extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.morePaperLib = new MorePaperLib(this);
         this.chunkGenVersion = this.setupVoidChunkGen();
         this.getLogger().info("Using VoidChunkGen: " + this.chunkGenVersion.name());
 
@@ -50,7 +54,7 @@ public final class VoidGen extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.getServer().getScheduler().cancelTasks(this);
+        morePaperLib.scheduling().cancelGlobalTasks();
         this.eventManager.terminate();
     }
 

@@ -1,16 +1,12 @@
-import proguard.gradle.ProGuardTask
-
 buildscript {
     repositories {
         mavenCentral()
-    }
-    dependencies {
-        classpath group: 'com.guardsquare', name: 'proguard-gradle', version: '7.2.0-beta2'
     }
 }
 
 plugins {
     id 'java'
+    id 'io.github.goooler.shadow' version "8.1.7"
 }
 
 group = project.plugin_group as Object
@@ -42,11 +38,16 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven {
+        name 'arim-mvn-lgpl3'
+        url 'https://mvn-repo.arim.space/lesser-gpl3/'
+    }
 }
 
 dependencies {
 //    implementation 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.18.1-R0.1-SNAPSHOT'
+    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.18.1-R0.1-SNAPSHOT'
+    implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
 }
 
 processResources {
@@ -60,26 +61,11 @@ processResources {
     }
 }
 
-def proguardOutFile = rootProject.file("$buildDir/libs/release.jar")
-def jarFile = jar.outputs.files.singleFile
-task proguard(type: ProGuardTask) {
-    outputs.upToDateWhen { false }
-    configuration 'configuration.pro'
-
-    injars jarFile
-    outjars proguardOutFile
-    libraryjars configurations.findByName('runtimeClasspath').getFiles()
-    // Java 8
-    libraryjars "${System.getProperty("java.home")}/lib/rt.jar"
-    // Java 9+ compatibility
-    libraryjars "${System.getProperty("java.home")}/jmods/java.base.jmod"
-    libraryjars "${System.getProperty("java.home")}/jmods/java.desktop.jmod"
-    libraryjars "${System.getProperty("java.home")}/jmods/java.logging.jmod"
-    libraryjars "${System.getProperty("java.home")}/jmods/jdk.unsupported.jmod"
+shadowJar {
+    archiveFileName.set("${project.name}-${project.version}.jar")
+    relocate 'space.arim.morepaperlib', 'de.xtkq.voidgen.lib.morepaperlib'
 }
 
-jar.finalizedBy proguard
-proguard.doLast {
-    if (!jarFile.delete()) throw new IllegalStateException()
-    if (!proguardOutFile.renameTo(jarFile)) throw new IllegalStateException()
+tasks.build {
+    dependsOn shadowJar
 }

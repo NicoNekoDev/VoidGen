@@ -1,5 +1,6 @@
 package de.xtkq.voidgen.events;
 
+import de.xtkq.voidgen.VoidGen;
 import de.xtkq.voidgen.utils.UpdateUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class PlayerLoginListener implements Listener {
         Player player = event.getPlayer();
         if (UpdateUtils.isUpdateAvailable()) {
             if (player.isOp()) {
-                this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> player.sendMessage(this.getUpdateMessage()), 60L);
+                VoidGen.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> player.sendMessage(this.getUpdateMessage()),null, 60L);
             }
         }
     }
