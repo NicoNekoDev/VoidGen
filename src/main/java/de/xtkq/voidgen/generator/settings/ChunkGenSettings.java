@@ -60,4 +60,36 @@ public class ChunkGenSettings {
     public boolean isBedrock() {
         return this.bedrock;
     }
+
+    public void setBiome(Biome biome) {
+        this.biome = biome;
+    }
+
+    public void setCaves(boolean caves) {
+        this.caves = caves;
+    }
+
+    public void setDecoration(boolean decoration) {
+        this.decoration = decoration;
+    }
+
+    public void setMobs(boolean mobs) {
+        this.mobs = mobs;
+    }
+
+    public void setStructures(boolean structures) {
+        this.structures = structures;
+    }
+
+    public void setNoise(boolean noise) {
+        this.noise = noise;
+    }
+
+    public void setSurface(boolean surface) {
+        this.surface = surface;
+    }
+
+    public void setBedrock(boolean bedrock) {
+        this.bedrock = bedrock;
+    }
 }

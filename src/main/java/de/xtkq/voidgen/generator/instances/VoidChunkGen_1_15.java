@@ -2,11 +2,9 @@ package de.xtkq.voidgen.generator.instances;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import de.xtkq.voidgen.VoidGen;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.interfaces.ChunkGen3D;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,7 +18,7 @@ public class VoidChunkGen_1_15 extends ChunkGen3D {
         super(paramPlugin);
         Gson gson = new Gson();
 
-        if (StringUtils.isBlank(paramIdentifier)) {
+        if (paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings();
             this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
         } else {

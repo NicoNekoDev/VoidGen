@@ -2,10 +2,7 @@ package de.xtkq.voidgen;
 
 import de.xtkq.voidgen.events.EventManager;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
-import de.xtkq.voidgen.generator.instances.VoidChunkGen_1_15;
-import de.xtkq.voidgen.generator.instances.VoidChunkGen_1_17;
-import de.xtkq.voidgen.generator.instances.VoidChunkGen_1_17_1;
-import de.xtkq.voidgen.generator.instances.VoidChunkGen_1_8_8;
+import de.xtkq.voidgen.generator.instances.*;
 import de.xtkq.voidgen.settings.ConfigManager;
 import de.xtkq.voidgen.utils.UpdateUtils;
 import org.bukkit.Bukkit;
@@ -28,8 +25,10 @@ public final class VoidGen extends JavaPlugin {
                 return new VoidChunkGen_1_15(this, id);
             case VERSION_1_17:
                 return new VoidChunkGen_1_17(this, id);
-            default:
+            case VERSION_1_17_1:
                 return new VoidChunkGen_1_17_1(this, id);
+            default:
+                return new VoidChunkGen_1_21_3(this, id);
         }
     }
 
@@ -76,6 +75,11 @@ public final class VoidGen extends JavaPlugin {
         annotation = VoidChunkGen_1_17_1.class.getAnnotation(VoidChunkGenInfo.class);
         if (Arrays.asList(annotation.versions()).contains(bukkitVersion)) {
             return ChunkGenVersion.VERSION_1_17_1;
+        }
+
+        annotation = VoidChunkGen_1_21_3.class.getAnnotation(VoidChunkGenInfo.class);
+        if (Arrays.asList(annotation.versions()).contains(bukkitVersion)) {
+            return ChunkGenVersion.VERSION_1_21_3;
         }
 
         return ChunkGenVersion.VERSION_UNKNOWN;

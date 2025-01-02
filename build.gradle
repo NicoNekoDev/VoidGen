@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'com.guardsquare', name: 'proguard-gradle', version: '7.2.0-beta2'
+        classpath group: 'com.guardsquare', name: 'proguard-gradle', version: '7.6.1'
     }
 }
 
@@ -16,7 +16,7 @@ plugins {
 group = project.plugin_group as Object
 version = project.plugin_version as Object
 
-def targetJavaVersion = 8
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -46,7 +46,7 @@ repositories {
 
 dependencies {
 //    implementation 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.18.1-R0.1-SNAPSHOT'
+    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.21.4-R0.1-SNAPSHOT'
 }
 
 processResources {
@@ -62,7 +62,7 @@ processResources {
 
 def proguardOutFile = rootProject.file("$buildDir/libs/release.jar")
 def jarFile = jar.outputs.files.singleFile
-task proguard(type: ProGuardTask) {
+tasks.register('proguard', ProGuardTask) {
     outputs.upToDateWhen { false }
     configuration 'configuration.pro'
 
