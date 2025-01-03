@@ -30,7 +30,7 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
         builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter());
         Gson gson = builder.create();
 
-        if (paramIdentifier.isBlank()) {
+        if (paramIdentifier == null || paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings();
             this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
         } else {
@@ -95,7 +95,8 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
             jsonReader.beginObject();
             while (jsonReader.hasNext()) {
                 switch (jsonReader.nextName()) {
-                    case "biome" -> chunkGenSettings.setBiome(Registry.BIOME.get(NamespacedKey.minecraft(jsonReader.nextString().toLowerCase())));
+                    case "biome" ->
+                            chunkGenSettings.setBiome(Registry.BIOME.get(NamespacedKey.minecraft(jsonReader.nextString().toLowerCase())));
                     case "caves" -> chunkGenSettings.setCaves(jsonReader.nextBoolean());
                     case "decoration" -> chunkGenSettings.setDecoration(jsonReader.nextBoolean());
                     case "mobs" -> chunkGenSettings.setMobs(jsonReader.nextBoolean());

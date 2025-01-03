@@ -21,7 +21,7 @@ public class VoidChunkGen_1_17_1 extends ChunkGen {
         super(javaPlugin);
         Gson gson = new Gson();
 
-        if (paramIdentifier.isBlank()) {
+        if (paramIdentifier == null || paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings();
             this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
         } else {
