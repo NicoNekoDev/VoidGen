@@ -1,22 +1,23 @@
 package de.xtkq.voidgen.utils;
 
 import com.google.gson.Gson;
-import org.bukkit.plugin.java.JavaPlugin;
+import de.xtkq.voidgen.VoidGen;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
 public class UpdateUtils {
-    private static final String GITHUB_API = "https://api.github.com/repos/xtkq-is-not-available/%s/releases/latest";
+    private static final String GITHUB_API = "https://api.github.com/repos/NicoNekoDev/%s/releases/latest";
     private static boolean updateAvailable = false;
     private static String latestRelease;
     private static String latestReleaseURL;
-    private final JavaPlugin plugin;
+    private final VoidGen plugin;
 
-    public UpdateUtils(JavaPlugin paramPlugin) {
+    public UpdateUtils(VoidGen paramPlugin) {
         this.plugin = paramPlugin;
         latestRelease = paramPlugin.getDescription().getVersion();
     }
@@ -37,7 +38,7 @@ public class UpdateUtils {
         this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
             Gson gson = new Gson();
             try {
-                URL url = new URL(String.format(GITHUB_API, this.plugin.getName()));
+                URL url = new URI(String.format(GITHUB_API, this.plugin.getName())).toURL();
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("GET");
                 httpsURLConnection.setRequestProperty("accept", "application/vnd.github.v3+json");

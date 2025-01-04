@@ -7,6 +7,7 @@ import de.xtkq.voidgen.generator.interfaces.ChunkGen2D;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Random;
@@ -34,14 +35,16 @@ public class VoidChunkGen_1_8_8 extends ChunkGen2D {
         this.javaPlugin.getLogger().info(gson.toJson(chunkGenSettings));
     }
 
+    @SuppressWarnings("deprecation")
+    @NotNull
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid paramBiomeGrid) {
+    public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid paramBiomeGrid) {
         ChunkData chunkData = this.createChunkData(world);
         if (Objects.nonNull(this.chunkGenSettings.getBiome())) {
             this.setBiomeGrid(paramBiomeGrid, chunkData);
         }
 
-        super.generateBedrock(null, random, chunkX, chunkZ, chunkData);
+        super.generateBedrock(world, random, chunkX, chunkZ, chunkData);
         return chunkData;
     }
 }

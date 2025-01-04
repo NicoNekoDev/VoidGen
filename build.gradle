@@ -79,7 +79,7 @@ tasks.register('proguard', ProGuardTask) {
 }
 
 jar.finalizedBy proguard
-proguard.doLast {
+proguard.addShutdownHook {
     if (!jarFile.delete()) throw new IllegalStateException()
     if (!proguardOutFile.renameTo(jarFile)) throw new IllegalStateException()
 }

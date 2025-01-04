@@ -9,6 +9,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,7 @@ public class VoidChunkGen_1_17_1 extends ChunkGen {
     }
 
     @Override
-    public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
+    public BiomeProvider getDefaultBiomeProvider(@NotNull WorldInfo worldInfo) {
         if (Objects.isNull(this.chunkGenSettings.getBiome())) {
             return null;
         } else {
@@ -52,13 +53,15 @@ public class VoidChunkGen_1_17_1 extends ChunkGen {
             this.biome = paramBiome;
         }
 
+        @NotNull
         @Override
-        public Biome getBiome(WorldInfo worldInfo, int x, int y, int z) {
+        public Biome getBiome(@NotNull WorldInfo worldInfo, int x, int y, int z) {
             return this.biome;
         }
 
+        @NotNull
         @Override
-        public List<Biome> getBiomes(WorldInfo worldInfo) {
+        public List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
             return Collections.singletonList(this.biome);
         }
     }

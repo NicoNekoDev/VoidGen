@@ -6,7 +6,7 @@ import org.bukkit.block.Biome;
 public class ChunkGenSettings {
 
     @SerializedName("biome")
-    private Biome biome = null;
+    private Biome biome = Biome.THE_VOID;
 
     @SerializedName("caves")
     private boolean caves = false;
