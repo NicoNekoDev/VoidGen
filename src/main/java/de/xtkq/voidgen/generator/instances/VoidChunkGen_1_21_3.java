@@ -1,9 +1,6 @@
 package de.xtkq.voidgen.generator.instances;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.TypeAdapter;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
@@ -29,6 +26,7 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
         super(javaPlugin);
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter());
+        builder.setStrictness(Strictness.LENIENT);
         Gson gson = builder.create();
 
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
@@ -77,11 +75,15 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
 
     private static class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
 
+        @SuppressWarnings("deprecation")
         @Override
         public void write(JsonWriter jsonWriter, ChunkGenSettings chunkGenSettings) throws IOException {
             jsonWriter.beginObject();
-            if (!Objects.isNull(chunkGenSettings.getBiome()))
-                jsonWriter.name("biome").value(chunkGenSettings.getBiome().getKey().getKey().toLowerCase());
+            Biome biome = chunkGenSettings.getBiome();
+            if (biome != null) {
+                NamespacedKey key = biome.getKey();
+                jsonWriter.name("biome").value(key.getKey().toLowerCase());
+            }
             jsonWriter.name("caves").value(chunkGenSettings.isCaves());
             jsonWriter.name("decoration").value(chunkGenSettings.isDecoration());
             jsonWriter.name("mobs").value(chunkGenSettings.isMobs());

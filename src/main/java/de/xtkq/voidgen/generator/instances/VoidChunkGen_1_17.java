@@ -1,7 +1,9 @@
 package de.xtkq.voidgen.generator.instances;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.interfaces.ChunkGen3DExtended;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
@@ -17,7 +19,9 @@ public class VoidChunkGen_1_17 extends ChunkGen3DExtended {
 
     public VoidChunkGen_1_17(JavaPlugin paramPlugin, String paramIdentifier) {
         super(paramPlugin);
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.setStrictness(Strictness.LENIENT);
+        Gson gson = builder.create();
 
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings();
