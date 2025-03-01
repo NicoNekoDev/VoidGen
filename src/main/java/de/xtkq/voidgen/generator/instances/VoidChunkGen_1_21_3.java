@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @VoidChunkGenInfo(versions = {"1.21.3", "1.21.4"})
 public class VoidChunkGen_1_21_3 extends ChunkGen {
@@ -30,13 +29,13 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
         Gson gson = builder.create();
 
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
-            this.chunkGenSettings = new ChunkGenSettings();
+            this.chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
             this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
             } catch (JsonSyntaxException jse) {
-                this.chunkGenSettings = new ChunkGenSettings();
+                this.chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
                 this.javaPlugin.getLogger().info("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
             }
         }
@@ -46,11 +45,7 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
 
     @Override
     public BiomeProvider getDefaultBiomeProvider(@NotNull WorldInfo worldInfo) {
-        if (Objects.isNull(this.chunkGenSettings.getBiome())) {
-            return null;
-        } else {
-            return new VoidBiomeProvider(this.chunkGenSettings.getBiome());
-        }
+        return new VoidBiomeProvider(this.chunkGenSettings.getBiome());
     }
 
     private static class VoidBiomeProvider extends BiomeProvider {
@@ -80,10 +75,7 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
         public void write(JsonWriter jsonWriter, ChunkGenSettings chunkGenSettings) throws IOException {
             jsonWriter.beginObject();
             Biome biome = chunkGenSettings.getBiome();
-            if (biome != null) {
-                NamespacedKey key = biome.getKey();
-                jsonWriter.name("biome").value(key.getKey().toLowerCase());
-            }
+            jsonWriter.name("biome").value(biome.getKey().getKey().toLowerCase());
             jsonWriter.name("caves").value(chunkGenSettings.isCaves());
             jsonWriter.name("decoration").value(chunkGenSettings.isDecoration());
             jsonWriter.name("mobs").value(chunkGenSettings.isMobs());
@@ -96,12 +88,15 @@ public class VoidChunkGen_1_21_3 extends ChunkGen {
 
         @Override
         public ChunkGenSettings read(JsonReader jsonReader) throws IOException {
-            ChunkGenSettings chunkGenSettings = new ChunkGenSettings();
+            ChunkGenSettings chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
             jsonReader.beginObject();
             while (jsonReader.hasNext()) {
                 switch (jsonReader.nextName()) {
-                    case "biome" ->
-                            chunkGenSettings.setBiome(Registry.BIOME.get(NamespacedKey.minecraft(jsonReader.nextString().toLowerCase())));
+                    case "biome" -> {
+                        Biome biome = Registry.BIOME.get(NamespacedKey.minecraft(jsonReader.nextString().toLowerCase()));
+                        if (biome != null)
+                            chunkGenSettings.setBiome(biome);
+                    }
                     case "caves" -> chunkGenSettings.setCaves(jsonReader.nextBoolean());
                     case "decoration" -> chunkGenSettings.setDecoration(jsonReader.nextBoolean());
                     case "mobs" -> chunkGenSettings.setMobs(jsonReader.nextBoolean());

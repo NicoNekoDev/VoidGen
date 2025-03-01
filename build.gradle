@@ -1,14 +1,3 @@
-import proguard.gradle.ProGuardTask
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'com.guardsquare', name: 'proguard-gradle', version: '7.6.1'
-    }
-}
-
 plugins {
     id 'java'
 }
@@ -45,8 +34,9 @@ repositories {
 }
 
 dependencies {
-//    implementation 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.21.4-R0.1-SNAPSHOT'
+    implementation 'org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
 }
 
 processResources {
@@ -58,28 +48,4 @@ processResources {
     filesMatching('plugin.yml') {
         expand properties
     }
-}
-
-def proguardOutFile = rootProject.file("$buildDir/libs/release.jar")
-def jarFile = jar.outputs.files.singleFile
-tasks.register('proguard', ProGuardTask) {
-    outputs.upToDateWhen { false }
-    configuration 'configuration.pro'
-
-    injars jarFile
-    outjars proguardOutFile
-    libraryjars configurations.findByName('runtimeClasspath').getFiles()
-    // Java 8
-    libraryjars "${System.getProperty("java.home")}/lib/rt.jar"
-    // Java 9+ compatibility
-    libraryjars "${System.getProperty("java.home")}/jmods/java.base.jmod"
-    libraryjars "${System.getProperty("java.home")}/jmods/java.desktop.jmod"
-    libraryjars "${System.getProperty("java.home")}/jmods/java.logging.jmod"
-    libraryjars "${System.getProperty("java.home")}/jmods/jdk.unsupported.jmod"
-}
-
-jar.finalizedBy proguard
-proguard.addShutdownHook {
-    if (!jarFile.delete()) throw new IllegalStateException()
-    if (!proguardOutFile.renameTo(jarFile)) throw new IllegalStateException()
 }

@@ -8,6 +8,7 @@ import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.interfaces.ChunkGen3DExtended;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,13 +25,13 @@ public class VoidChunkGen_1_17 extends ChunkGen3DExtended {
         Gson gson = builder.create();
 
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
-            this.chunkGenSettings = new ChunkGenSettings();
+            this.chunkGenSettings = new ChunkGenSettings(Biome.PLAINS);
             this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
             } catch (JsonSyntaxException jse) {
-                this.chunkGenSettings = new ChunkGenSettings();
+                this.chunkGenSettings = new ChunkGenSettings(Biome.PLAINS);
                 this.javaPlugin.getLogger().info("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
             }
         }
@@ -43,9 +44,7 @@ public class VoidChunkGen_1_17 extends ChunkGen3DExtended {
     @Override
     public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid paramBiomeGrid) {
         ChunkData chunkData = this.createChunkData(world);
-        if (Objects.nonNull(this.chunkGenSettings.getBiome())) {
-            this.setBiomeGrid(paramBiomeGrid, chunkData);
-        }
+        this.setBiomeGrid(paramBiomeGrid, chunkData);
 
         super.generateBedrock(world, random, chunkX, chunkZ, chunkData);
         return chunkData;

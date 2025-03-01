@@ -24,6 +24,7 @@ public final class VoidGen extends JavaPlugin {
             case VERSION_1_15 -> new VoidChunkGen_1_15(this, id);
             case VERSION_1_17 -> new VoidChunkGen_1_17(this, id);
             case VERSION_1_17_1 -> new VoidChunkGen_1_17_1(this, id);
+            case VERSION_1_19 -> new VoidChunkGen_1_19(this, id);
             default -> new VoidChunkGen_1_21_3(this, id);
         };
     }
@@ -71,6 +72,11 @@ public final class VoidGen extends JavaPlugin {
         annotation = VoidChunkGen_1_17_1.class.getAnnotation(VoidChunkGenInfo.class);
         if (Arrays.asList(annotation.versions()).contains(bukkitVersion)) {
             return ChunkGenVersion.VERSION_1_17_1;
+        }
+
+        annotation = VoidChunkGen_1_19.class.getAnnotation(VoidChunkGenInfo.class);
+        if (Arrays.asList(annotation.versions()).contains(bukkitVersion)) {
+            return ChunkGenVersion.VERSION_1_19;
         }
 
         annotation = VoidChunkGen_1_21_3.class.getAnnotation(VoidChunkGenInfo.class);

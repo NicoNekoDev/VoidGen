@@ -15,25 +15,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-@VoidChunkGenInfo(versions = {"1.17.1", "1.18", "1.18.1", "1.18.2"})
-public class VoidChunkGen_1_17_1 extends ChunkGen {
+@VoidChunkGenInfo(versions = {"1.19", "1.19.1", "1.19.2", "1.19.3", "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.21", "1.21.1", "1.21.2"})
+public class VoidChunkGen_1_19 extends ChunkGen {
 
-    public VoidChunkGen_1_17_1(JavaPlugin javaPlugin, String paramIdentifier) {
+    public VoidChunkGen_1_19(JavaPlugin javaPlugin, String paramIdentifier) {
         super(javaPlugin);
         GsonBuilder builder = new GsonBuilder();
         builder.setStrictness(Strictness.LENIENT);
         Gson gson = builder.create();
 
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
-            this.chunkGenSettings = new ChunkGenSettings(Biome.PLAINS);
+            this.chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
             this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
             } catch (JsonSyntaxException jse) {
-                this.chunkGenSettings = new ChunkGenSettings(Biome.PLAINS);
+                this.chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
                 this.javaPlugin.getLogger().info("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
             }
         }

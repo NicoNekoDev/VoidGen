@@ -2,6 +2,7 @@ package de.xtkq.voidgen.utils;
 
 import com.google.gson.Gson;
 import de.xtkq.voidgen.VoidGen;
+import lombok.Getter;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -12,26 +13,17 @@ import java.util.Map;
 
 public class UpdateUtils {
     private static final String GITHUB_API = "https://api.github.com/repos/NicoNekoDev/%s/releases/latest";
+    @Getter
     private static boolean updateAvailable = false;
+    @Getter
     private static String latestRelease;
+    @Getter
     private static String latestReleaseURL;
     private final VoidGen plugin;
 
     public UpdateUtils(VoidGen paramPlugin) {
         this.plugin = paramPlugin;
         latestRelease = paramPlugin.getDescription().getVersion();
-    }
-
-    public static boolean isUpdateAvailable() {
-        return updateAvailable;
-    }
-
-    public static String getLatestRelease() {
-        return latestRelease;
-    }
-
-    public static String getLatestReleaseURL() {
-        return latestReleaseURL;
     }
 
     public void checkForUpdates() {
