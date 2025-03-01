@@ -33,7 +33,7 @@ It is also possible to modify the basic generator with additional [parameters](#
 
 ## Validating parameters
 
-You need to make sure that your parameters are valid. The plugin will try it's best to understand your json syntax and validate it, but there might be some edge cases that will cause the plugin to not work correctly, and the default parameters will be used instead. Use this [website](https://jsonformatter.curiousconcept.com/) to validate your json syntax.
+You need to make sure that your parameters are valid. The plugin will try it's best to understand your json syntax and validate it, but there might be some edge cases that will cause the plugin to not work correctly, and the default parameters will be used instead. <br> Use this [website](https://jsonformatter.curiousconcept.com/) to validate your json syntax.
 
 ## Restart
 
