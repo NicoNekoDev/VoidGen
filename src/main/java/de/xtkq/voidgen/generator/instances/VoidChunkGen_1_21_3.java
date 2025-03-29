@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-@VoidChunkGenInfo(versions = {"1.21.3", "1.21.4"})
+@VoidChunkGenInfo(versions = {"1.21.3", "1.21.4", "1.21.5"})
 public class VoidChunkGen_1_21_3 extends ChunkGen {
 
     public VoidChunkGen_1_21_3(JavaPlugin javaPlugin, String paramIdentifier) {
