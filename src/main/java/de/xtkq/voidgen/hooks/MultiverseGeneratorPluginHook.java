@@ -1,4 +1,4 @@
-package de.xtkq.voidgen.hook;
+package de.xtkq.voidgen.hooks;
 
 import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.external.jetbrains.annotations.NotNull;
