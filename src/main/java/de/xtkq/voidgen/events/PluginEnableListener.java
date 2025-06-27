@@ -9,6 +9,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class PluginEnableListener implements Listener {
 
     private final VoidGen voidGen;
@@ -23,9 +25,13 @@ public class PluginEnableListener implements Listener {
         if (event.getPlugin().getName().equals("Multiverse-Core")) {
             try {
                 Class.forName("org.mvplugins.multiverse.core.MultiverseCoreApi");
-                MultiverseCoreApi.get().getGeneratorProvider().registerGeneratorPlugin(new MultiverseGeneratorPluginHook());
-            } catch (ClassNotFoundException ignore) {
-                // ignore - assume multiverse not installed
+                MultiverseCoreApi.get().getGeneratorProvider().registerGeneratorPlugin(MultiverseGeneratorPluginHook.class.getDeclaredConstructor().newInstance());
+                this.voidGen.getLogger().info("VoidGen hooked into Multiverse!");
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException | ClassNotFoundException ex) {
+                this.voidGen.getLogger().warning("VoidGen tried to hook into Multiverse, but you're using an outdated version of it!");
+                this.voidGen.getLogger().warning("Please update Multiverse to the latest version (5.0.0 or above)!");
+                this.voidGen.getLogger().warning("If this doesn't apply for your server version, please ignore.");
             }
         }
     }
