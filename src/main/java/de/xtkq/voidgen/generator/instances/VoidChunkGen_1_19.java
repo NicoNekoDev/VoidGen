@@ -27,17 +27,17 @@ public class VoidChunkGen_1_19 extends ChunkGen {
 
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
-            this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
+            this.javaPlugin.getLogger().warning("Generator settings have not been set. Using default values:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
             } catch (JsonSyntaxException jse) {
                 this.chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
-                this.javaPlugin.getLogger().info("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
+                this.javaPlugin.getLogger().warning("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
             }
         }
         // Posting the currently used chunkGenSettings to console.
-        this.javaPlugin.getLogger().info(gson.toJson(chunkGenSettings));
+        this.javaPlugin.getLogger().warning(gson.toJson(chunkGenSettings));
     }
 
     @Override

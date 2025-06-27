@@ -44,7 +44,7 @@ public class UpdateUtils {
                         updateAvailable = true;
                         latestRelease = ((String) map.get("name")).substring(1);
                         latestReleaseURL = (String) map.get("html_url");
-                        this.plugin.getLogger().info("Update v" + latestRelease + " is available: " + latestReleaseURL);
+                        this.plugin.getLogger().warning("Update v" + latestRelease + " is available: " + latestReleaseURL);
                     }
                 }
             } catch (Exception ignored) {
