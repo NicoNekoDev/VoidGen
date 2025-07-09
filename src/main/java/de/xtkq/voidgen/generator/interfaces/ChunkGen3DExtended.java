@@ -9,6 +9,7 @@ public abstract class ChunkGen3DExtended extends ChunkGen implements IChunkGenBi
         super(paramPlugin);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setBiomeGrid(ChunkGenerator.BiomeGrid paramBiomeGrid, ChunkGenerator.ChunkData paramChunkData) {
         for (int x = 0; x < 16; x++) {

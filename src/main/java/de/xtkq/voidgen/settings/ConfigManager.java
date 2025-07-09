@@ -51,7 +51,7 @@ public class ConfigManager {
             this.LOGGER.log(Level.INFO, "A new file will be generated and the default configuration will be used instead.");
             this.configuration = new Configuration();
         } catch (IOException ioException) {
-            ioException.printStackTrace();
+            LOGGER.log(Level.WARNING, "An IOException was thrown. The FileReader was unable to read the file:\"configuration.json\"", ioException);
         }
 
         try {
@@ -59,7 +59,7 @@ public class ConfigManager {
             gson.toJson(this.configuration, fileWriter);
             fileWriter.close();
         } catch (IOException ioException) {
-            this.LOGGER.log(Level.WARNING, "An IOException was thrown. The FileWriter was unable to write to the file:\"configuration.json\"");
+            this.LOGGER.log(Level.WARNING, "An IOException was thrown. The FileWriter was unable to write to the file:\"configuration.json\"", ioException);
         }
     }
 }

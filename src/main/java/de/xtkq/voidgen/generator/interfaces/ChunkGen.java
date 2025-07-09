@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public abstract class ChunkGen extends ChunkGenerator {
     }
 
     @Override
-    public Location getFixedSpawnLocation(World world, Random random) {
+    public Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
         return new Location(world, 0d, 64d, 0d);
     }
 
@@ -54,6 +55,7 @@ public abstract class ChunkGen extends ChunkGenerator {
         return this.chunkGenSettings.isSurface();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean shouldGenerateBedrock() {
         return this.chunkGenSettings.isBedrock();
@@ -71,7 +73,7 @@ public abstract class ChunkGen extends ChunkGenerator {
     }
 
     @Override
-    public void generateBedrock(WorldInfo worldInfo, Random random, int chunkX, int chunkZ, ChunkData chunkData) {
+    public void generateBedrock(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
         // Bedrock block position
         final int x = 0, y = 64, z = 0;
 

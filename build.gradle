@@ -1,35 +1,23 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
     id 'java'
-    id 'io.github.goooler.shadow' version "8.1.7"
+    id 'com.gradleup.shadow' version '9.0.0-beta12'
 }
 
-group = project.plugin_group as Object
-version = project.plugin_version as Object
+build {
+    dependsOn(shadowJar)
+}
 
-def targetJavaVersion = 8
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
-tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion
-    }
+shadowJar {
+    relocate('com.google.gson', 'de.xtkq.voidgen.libs.gson')
 }
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
     maven {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -39,14 +27,21 @@ repositories {
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
     maven {
-        name 'arim-mvn-lgpl3'
-        url 'https://mvn-repo.arim.space/lesser-gpl3/'
+        name = 'multiverse'
+        url = 'https://repo.onarandombox.com/content/groups/public/'
+    }
+    maven {
+        name = 'arim-mvn-lgpl3'
+        url = 'https://mvn-repo.arim.space/lesser-gpl3/'
     }
 }
 
 dependencies {
-//    implementation 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.18.1-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.21.6-R0.1-SNAPSHOT'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    compileOnly 'org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    implementation 'com.google.code.gson:gson:2.13.0'
     implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
 }
 
@@ -61,11 +56,5 @@ processResources {
     }
 }
 
-shadowJar {
-    archiveFileName.set("${project.name}-${project.version}.jar")
-    relocate 'space.arim.morepaperlib', 'de.xtkq.voidgen.lib.morepaperlib'
-}
-
-tasks.build {
-    dependsOn shadowJar
-}
+group = project.plugin_group as Object
+version = project.plugin_version as Object

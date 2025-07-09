@@ -1,14 +1,16 @@
 package de.xtkq.voidgen.generator.instances;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import de.xtkq.voidgen.VoidGen;
+import com.google.gson.Strictness;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.interfaces.ChunkGen3D;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Random;
@@ -18,31 +20,33 @@ public class VoidChunkGen_1_15 extends ChunkGen3D {
 
     public VoidChunkGen_1_15(JavaPlugin paramPlugin, String paramIdentifier) {
         super(paramPlugin);
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.setStrictness(Strictness.LENIENT);
+        Gson gson = builder.create();
 
-        if (StringUtils.isBlank(paramIdentifier)) {
-            this.chunkGenSettings = new ChunkGenSettings();
-            this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
+        if (paramIdentifier == null || paramIdentifier.isBlank()) {
+            this.chunkGenSettings = new ChunkGenSettings(Biome.PLAINS);
+            this.javaPlugin.getLogger().warning("Generator settings have not been set. Using default values:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
             } catch (JsonSyntaxException jse) {
-                this.chunkGenSettings = new ChunkGenSettings();
-                this.javaPlugin.getLogger().info("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
+                this.chunkGenSettings = new ChunkGenSettings(Biome.PLAINS);
+                this.javaPlugin.getLogger().warning("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
             }
         }
         // Posting the currently used chunkGenSettings to console.
-        this.javaPlugin.getLogger().info(gson.toJson(chunkGenSettings));
+        this.javaPlugin.getLogger().warning(gson.toJson(chunkGenSettings));
     }
 
+    @NotNull
+    @SuppressWarnings("deprecation")
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid paramBiomeGrid) {
+    public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid paramBiomeGrid) {
         ChunkData chunkData = this.createChunkData(world);
-        if (Objects.nonNull(this.chunkGenSettings.getBiome())) {
-            this.setBiomeGrid(paramBiomeGrid, chunkData);
-        }
+        this.setBiomeGrid(paramBiomeGrid, chunkData);
 
-        super.generateBedrock(null, random, chunkX, chunkZ, chunkData);
+        super.generateBedrock(world, random, chunkX, chunkZ, chunkData);
 //        this.placeBedrock(chunkData, ChunkX, ChunkZ);
         return chunkData;
     }

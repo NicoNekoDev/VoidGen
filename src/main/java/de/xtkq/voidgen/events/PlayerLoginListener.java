@@ -8,15 +8,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class PlayerLoginListener implements Listener {
 
-    private final JavaPlugin plugin;
+    private final VoidGen voidGen;
 
-    public PlayerLoginListener(JavaPlugin paramPlugin) {
-        this.plugin = paramPlugin;
-        this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    public PlayerLoginListener(VoidGen voidGen) {
+        this.voidGen = voidGen;
+        this.voidGen.getServer().getPluginManager().registerEvents(this, voidGen);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -30,11 +29,11 @@ public class PlayerLoginListener implements Listener {
     }
 
     private String getUpdateMessage() {
-        String updateMessage = String.format("&e%s &7v.%s is available here: &e%s&r", this.plugin.getName(), UpdateUtils.getLatestRelease(), UpdateUtils.getLatestReleaseURL());
+        String updateMessage = String.format("&e%s &7v.%s is available here: &e%s&r", this.voidGen.getName(), UpdateUtils.getLatestRelease(), UpdateUtils.getLatestReleaseURL());
         return ChatColor.translateAlternateColorCodes('&', updateMessage);
     }
 
     public void terminate() {
-        PlayerLoginEvent.getHandlerList().unregister(this.plugin);
+        PlayerLoginEvent.getHandlerList().unregister(this.voidGen);
     }
 }
