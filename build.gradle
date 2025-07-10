@@ -13,6 +13,7 @@ java {
 
 shadowJar {
     relocate('com.google.gson', 'de.xtkq.voidgen.libs.gson')
+    relocate('com.tcoded.folialib', "de.xtkq.voidgen.libs.folialib")
 }
 
 repositories {
@@ -30,6 +31,10 @@ repositories {
         name = "multiverse"
         url = "https://repo.onarandombox.com/content/groups/public/"
     }
+    maven {
+        name = "tcoded-releases"
+        url = "https://repo.tcoded.com/releases"
+    }
 }
 
 dependencies {
@@ -38,6 +43,7 @@ dependencies {
     compileOnly 'org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
     implementation 'com.google.code.gson:gson:2.13.0'
+    implementation 'com.tcoded:FoliaLib:0.5.1'
 }
 
 processResources {

@@ -6,3 +6,4 @@ load: STARTUP
 loadbefore: [ Multiverse-Core, Multiworld ]
 author: '${author}'
 website: '${website}'
+folia-supported: true

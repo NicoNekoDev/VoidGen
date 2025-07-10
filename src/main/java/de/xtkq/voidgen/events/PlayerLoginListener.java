@@ -9,6 +9,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.util.concurrent.TimeUnit;
+
 public class PlayerLoginListener implements Listener {
 
     private final VoidGen voidGen;
@@ -23,7 +25,7 @@ public class PlayerLoginListener implements Listener {
         Player player = event.getPlayer();
         if (UpdateUtils.isUpdateAvailable()) {
             if (player.isOp()) {
-                this.voidGen.getServer().getScheduler().runTaskLater(this.voidGen, () -> player.sendMessage(this.getUpdateMessage()), 60L);
+                this.voidGen.getFoliaLib().getScheduler().runAtEntityLater(player, () -> player.sendMessage(this.getUpdateMessage()), 3L, TimeUnit.SECONDS);
             }
         }
     }

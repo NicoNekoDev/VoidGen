@@ -1,10 +1,12 @@
 package de.xtkq.voidgen;
 
+import com.tcoded.folialib.FoliaLib;
 import de.xtkq.voidgen.events.EventManager;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.instances.*;
 import de.xtkq.voidgen.settings.ConfigManager;
 import de.xtkq.voidgen.utils.UpdateUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,7 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 public final class VoidGen extends JavaPlugin {
-
+    @Getter
+    private FoliaLib foliaLib;
     private ChunkGenVersion chunkGenVersion;
     private EventManager eventManager;
 
@@ -31,6 +34,7 @@ public final class VoidGen extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.foliaLib = new FoliaLib(this);
         this.chunkGenVersion = this.setupVoidChunkGen();
         this.getLogger().info("Using VoidChunkGen: " + this.chunkGenVersion.name());
 
@@ -46,7 +50,7 @@ public final class VoidGen extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.getServer().getScheduler().cancelTasks(this);
+        this.foliaLib.getScheduler().cancelAllTasks();
         this.eventManager.terminate();
     }
 

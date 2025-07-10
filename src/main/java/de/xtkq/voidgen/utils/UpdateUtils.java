@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class UpdateUtils {
     private static final String GITHUB_API = "https://api.github.com/repos/NicoNekoDev/%s/releases/latest";
@@ -19,18 +20,18 @@ public class UpdateUtils {
     private static String latestRelease;
     @Getter
     private static String latestReleaseURL;
-    private final VoidGen plugin;
+    private final VoidGen voidGen;
 
-    public UpdateUtils(VoidGen paramPlugin) {
-        this.plugin = paramPlugin;
-        latestRelease = paramPlugin.getDescription().getVersion();
+    public UpdateUtils(VoidGen voidGen) {
+        this.voidGen = voidGen;
+        latestRelease = voidGen.getDescription().getVersion();
     }
 
     public void checkForUpdates() {
-        this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
+        this.voidGen.getFoliaLib().getScheduler().runTimerAsync(() -> {
             Gson gson = new Gson();
             try {
-                URL url = new URI(String.format(GITHUB_API, this.plugin.getName())).toURL();
+                URL url = new URI(String.format(GITHUB_API, this.voidGen.getName())).toURL();
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("GET");
                 httpsURLConnection.setRequestProperty("accept", "application/vnd.github.v3+json");
@@ -40,17 +41,17 @@ public class UpdateUtils {
                     Map<?, ?> map = gson.fromJson(bufferedReader.readLine(), Map.class);
                     bufferedReader.close();
 
-                    if (isUpdateAvailable(this.plugin.getDescription().getVersion(), ((String) map.get("name")).substring(1))) {
+                    if (isUpdateAvailable(this.voidGen.getDescription().getVersion(), ((String) map.get("name")).substring(1))) {
                         updateAvailable = true;
                         latestRelease = ((String) map.get("name")).substring(1);
                         latestReleaseURL = (String) map.get("html_url");
-                        this.plugin.getLogger().warning("Update v" + latestRelease + " is available: " + latestReleaseURL);
+                        this.voidGen.getLogger().warning("Update v" + latestRelease + " is available: " + latestReleaseURL);
                     }
                 }
             } catch (Exception ignored) {
             }
             // Start 2min after server start and repeat every 3h
-        }, 2400L, 216000L);
+        }, 2L, 3 * 60L, TimeUnit.MINUTES);
     }
 
     /**
