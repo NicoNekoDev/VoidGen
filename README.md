@@ -5,6 +5,7 @@
     <a href="https://github.com/NicoNekoDev/VoidGen/releases/latest"><img src="https://img.shields.io/github/v/release/NicoNekoDev/VoidGen?label=release&color=success"></a>
     <a href="https://github.com/NicoNekoDev/VoidGen/releases/latest"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/NicoNekoDev/VoidGen/total"></a>    
     <a href="https://github.com/NicoNekoDev/VoidGen/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/NicoNekoDev/VoidGen?label=license&color=success"></a>
+    <a href="https://www.codefactor.io/repository/github/niconekodev/voidgen"><img src="https://www.codefactor.io/repository/github/niconekodev/voidgen/badge" alt="CodeFactor"></a>
 </p>
 
 # VoidGen
