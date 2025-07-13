@@ -1,9 +1,15 @@
 package de.xtkq.voidgen.generator.interfaces;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
+import de.xtkq.voidgen.utils.ChunkGenAdapter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,9 +22,29 @@ public abstract class ChunkGen extends ChunkGenerator {
     protected ChunkGenSettings chunkGenSettings;
     protected JavaPlugin javaPlugin;
 
-    public ChunkGen(JavaPlugin paramPlugin) {
+    public ChunkGen(JavaPlugin paramPlugin, String paramIdentifier) {
         this.javaPlugin = paramPlugin;
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter());
+        builder.setStrictness(Strictness.LENIENT);
+        Gson gson = builder.create();
+
+        if (paramIdentifier == null || paramIdentifier.isBlank()) {
+            this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
+            this.javaPlugin.getLogger().warning("Generator settings have not been set. Using default values:");
+        } else {
+            try {
+                this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
+            } catch (JsonSyntaxException jse) {
+                this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
+                this.javaPlugin.getLogger().warning("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
+            }
+        }
+        // Posting the currently used chunkGenSettings to console.
+        this.javaPlugin.getLogger().warning(gson.toJson(chunkGenSettings));
     }
+
+    public abstract Biome getDefaultBiome();
 
     @Override
     public Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
