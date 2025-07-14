@@ -1,14 +1,9 @@
 package de.xtkq.voidgen.generator.interfaces;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.Strictness;
+import com.google.gson.*;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
 import de.xtkq.voidgen.utils.ChunkGenAdapter;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
@@ -19,13 +14,13 @@ import java.util.Random;
 
 public abstract class ChunkGen extends ChunkGenerator {
 
+    private final JavaPlugin javaPlugin;
     protected ChunkGenSettings chunkGenSettings;
-    protected JavaPlugin javaPlugin;
 
-    public ChunkGen(JavaPlugin paramPlugin, String paramIdentifier) {
-        this.javaPlugin = paramPlugin;
+    public ChunkGen(JavaPlugin javaPlugin, String paramIdentifier) {
+        this.javaPlugin = javaPlugin;
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter());
+        builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter(this.javaPlugin));
         builder.setStrictness(Strictness.LENIENT);
         Gson gson = builder.create();
 
@@ -41,7 +36,7 @@ public abstract class ChunkGen extends ChunkGenerator {
             }
         }
         // Posting the currently used chunkGenSettings to console.
-        this.javaPlugin.getLogger().warning(gson.toJson(chunkGenSettings));
+        this.javaPlugin.getLogger().warning(gson.toJson(this.chunkGenSettings));
     }
 
     public abstract Biome getDefaultBiome();

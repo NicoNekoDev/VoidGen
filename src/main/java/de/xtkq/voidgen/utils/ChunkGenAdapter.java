@@ -4,13 +4,23 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
+import de.xtkq.voidgen.generator.settings.LayerSettings;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.block.Biome;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
+    private final JavaPlugin javaPlugin;
+
+    public ChunkGenAdapter(JavaPlugin paramPlugin) {
+        this.javaPlugin = paramPlugin;
+    }
 
     @SuppressWarnings("deprecation")
     @Override
@@ -25,6 +35,16 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
         jsonWriter.name("noise").value(chunkGenSettings.isNoise());
         jsonWriter.name("surface").value(chunkGenSettings.isSurface());
         jsonWriter.name("bedrock").value(chunkGenSettings.isBedrock());
+        if (chunkGenSettings.getLayers() != null) {
+            jsonWriter.name("layers").beginArray();
+            for (LayerSettings layerSettings : chunkGenSettings.getLayers()) {
+                jsonWriter.beginObject();
+                jsonWriter.name("material").value(layerSettings.getMaterial().getKey().getKey().toLowerCase());
+                jsonWriter.name("size").value(layerSettings.getSize());
+                jsonWriter.endObject();
+            }
+            jsonWriter.endArray();
+        }
         jsonWriter.endObject();
     }
 
@@ -35,9 +55,12 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
         while (jsonReader.hasNext()) {
             switch (jsonReader.nextName()) {
                 case "biome" -> {
-                    Biome biome = Registry.BIOME.get(NamespacedKey.minecraft(jsonReader.nextString().toLowerCase()));
+                    String biomeName = jsonReader.nextString();
+                    Biome biome = Registry.BIOME.get(NamespacedKey.minecraft(biomeName.toUpperCase()));
                     if (biome != null)
                         chunkGenSettings.setBiome(biome);
+                    else
+                        this.javaPlugin.getLogger().warning("Unknown biome \"" + biomeName + "\" skipped!");
                 }
                 case "caves" -> chunkGenSettings.setCaves(jsonReader.nextBoolean());
                 case "decoration" -> chunkGenSettings.setDecoration(jsonReader.nextBoolean());
@@ -46,6 +69,38 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
                 case "noise" -> chunkGenSettings.setNoise(jsonReader.nextBoolean());
                 case "surface" -> chunkGenSettings.setSurface(jsonReader.nextBoolean());
                 case "bedrock" -> chunkGenSettings.setBedrock(jsonReader.nextBoolean());
+                case "layers" -> {
+                    jsonReader.beginArray();
+                    List<LayerSettings> layerSettings = new ArrayList<>();
+                    while (jsonReader.hasNext()) {
+                        jsonReader.beginObject();
+                        LayerSettings layer = new LayerSettings();
+                        while (jsonReader.hasNext()) {
+                            switch (jsonReader.nextName()) {
+                                case "material" -> {
+                                    String materialName = jsonReader.nextString();
+                                    Material material = Registry.MATERIAL.get(NamespacedKey.minecraft(materialName.toUpperCase()));
+                                    if (material != null)
+                                        layer.setMaterial(material);
+                                    else
+                                        this.javaPlugin.getLogger().warning("Unknown material \"" + materialName + "\" skipped!");
+                                }
+                                case "size" -> {
+                                    int size = jsonReader.nextInt();
+                                    if (size < 0) {
+                                        this.javaPlugin.getLogger().warning("Layer size cannot be less than 0!");
+                                        size = 1;
+                                    }
+                                    layer.setSize(size);
+                                }
+                            }
+                        }
+                        layerSettings.add(layer);
+                        jsonReader.endObject();
+                    }
+                    chunkGenSettings.setLayers(layerSettings);
+                    jsonReader.endArray();
+                }
                 default -> jsonReader.skipValue();
             }
         }
