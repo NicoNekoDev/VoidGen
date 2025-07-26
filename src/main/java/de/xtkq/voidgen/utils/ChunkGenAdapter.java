@@ -6,8 +6,6 @@ import com.google.gson.stream.JsonWriter;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
 import de.xtkq.voidgen.generator.settings.LayerSettings;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,25 +20,30 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
         this.javaPlugin = paramPlugin;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void write(JsonWriter jsonWriter, ChunkGenSettings chunkGenSettings) throws IOException {
         jsonWriter.beginObject();
-        Biome biome = chunkGenSettings.getBiome();
-        jsonWriter.name("biome").value(biome.getKey().getKey().toLowerCase());
-        jsonWriter.name("caves").value(chunkGenSettings.isCaves());
-        jsonWriter.name("decoration").value(chunkGenSettings.isDecoration());
-        jsonWriter.name("mobs").value(chunkGenSettings.isMobs());
-        jsonWriter.name("structures").value(chunkGenSettings.isStructures());
-        jsonWriter.name("noise").value(chunkGenSettings.isNoise());
-        jsonWriter.name("surface").value(chunkGenSettings.isSurface());
-        jsonWriter.name("bedrock").value(chunkGenSettings.isBedrock());
+        jsonWriter.name("biome").value(chunkGenSettings.getBiome().name().toLowerCase());
+        if (chunkGenSettings.isCaves())
+            jsonWriter.name("caves").value(chunkGenSettings.isCaves());
+        if (chunkGenSettings.isDecoration())
+            jsonWriter.name("decoration").value(chunkGenSettings.isDecoration());
+        if (chunkGenSettings.isMobs())
+            jsonWriter.name("mobs").value(chunkGenSettings.isMobs());
+        if (chunkGenSettings.isStructures())
+            jsonWriter.name("structures").value(chunkGenSettings.isStructures());
+        if (chunkGenSettings.isNoise())
+            jsonWriter.name("noise").value(chunkGenSettings.isNoise());
+        if (chunkGenSettings.isSurface())
+            jsonWriter.name("surface").value(chunkGenSettings.isSurface());
+        if (chunkGenSettings.isBedrock())
+            jsonWriter.name("bedrock").value(chunkGenSettings.isBedrock());
         if (chunkGenSettings.getLayers() != null) {
             jsonWriter.name("layers").beginArray();
             for (LayerSettings layerSettings : chunkGenSettings.getLayers()) {
                 jsonWriter.beginObject();
-                jsonWriter.name("material").value(layerSettings.getMaterial().getKey().getKey().toLowerCase());
-                jsonWriter.name("size").value(layerSettings.getSize());
+                jsonWriter.name("block").value(layerSettings.getMaterial().name().toLowerCase());
+                jsonWriter.name("height").value(layerSettings.getHeight());
                 jsonWriter.endObject();
             }
             jsonWriter.endArray();
@@ -56,11 +59,11 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
             switch (jsonReader.nextName()) {
                 case "biome" -> {
                     String biomeName = jsonReader.nextString();
-                    Biome biome = Registry.BIOME.get(NamespacedKey.minecraft(biomeName.toUpperCase()));
-                    if (biome != null)
-                        chunkGenSettings.setBiome(biome);
-                    else
+                    try {
+                        chunkGenSettings.setBiome(Biome.valueOf(biomeName.toUpperCase()));
+                    } catch (Exception ex) {
                         this.javaPlugin.getLogger().warning("Unknown biome \"" + biomeName + "\" skipped!");
+                    }
                 }
                 case "caves" -> chunkGenSettings.setCaves(jsonReader.nextBoolean());
                 case "decoration" -> chunkGenSettings.setDecoration(jsonReader.nextBoolean());
@@ -77,21 +80,25 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
                         LayerSettings layer = new LayerSettings();
                         while (jsonReader.hasNext()) {
                             switch (jsonReader.nextName()) {
-                                case "material" -> {
-                                    String materialName = jsonReader.nextString();
-                                    Material material = Registry.MATERIAL.get(NamespacedKey.minecraft(materialName.toUpperCase()));
-                                    if (material != null)
-                                        layer.setMaterial(material);
-                                    else
-                                        this.javaPlugin.getLogger().warning("Unknown material \"" + materialName + "\" skipped!");
-                                }
-                                case "size" -> {
-                                    int size = jsonReader.nextInt();
-                                    if (size < 0) {
-                                        this.javaPlugin.getLogger().warning("Layer size cannot be less than 0!");
-                                        size = 1;
+                                case "block" -> {
+                                    String block = jsonReader.nextString();
+                                    try {
+                                        Material material = Material.valueOf(block.toUpperCase());
+                                        if (material.isAir() || material.isBlock())
+                                            layer.setMaterial(material);
+                                        else
+                                            this.javaPlugin.getLogger().warning("Material type \"" + block + "\" is not a block!");
+                                    } catch (Exception ex) {
+                                        this.javaPlugin.getLogger().warning("Unknown material type \"" + block + "\", skipped!");
                                     }
-                                    layer.setSize(size);
+                                }
+                                case "height" -> {
+                                    int height = jsonReader.nextInt();
+                                    if (height < 0) {
+                                        this.javaPlugin.getLogger().warning("Layer height cannot be less than 0!");
+                                        height = 1;
+                                    }
+                                    layer.setHeight(height);
                                 }
                             }
                         }

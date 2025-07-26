@@ -1,15 +1,16 @@
 package de.xtkq.voidgen.generator.settings;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LayerSettings {
     @NotNull
     private Material material = Material.AIR;
 
-    private int size = 1;
+    private int height = 1;
 }

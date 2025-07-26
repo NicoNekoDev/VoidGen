@@ -82,17 +82,6 @@ public abstract class ChunkGen extends ChunkGenerator {
         return this.chunkGenSettings.isBedrock();
     }
 
-    protected void placeBedrock(ChunkData paramChunkData, int paramChunkX, int paramChunkZ) {
-        // Bedrock block position
-        int x = 0, y = 64, z = 0;
-
-        if ((x >= paramChunkX * 16) && (x < (paramChunkX + 1) * 16)) {
-            if ((z >= paramChunkZ * 16) && (z < (paramChunkZ + 1) * 16)) {
-                paramChunkData.setBlock(x, y, z, Material.BEDROCK);
-            }
-        }
-    }
-
     @Override
     public void generateBedrock(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
         // Bedrock block position

@@ -8,9 +8,8 @@ public abstract class ChunkGen2D extends ChunkGen implements IChunkGenBiomeGrid 
         super(paramPlugin, paramIdentifier);
     }
 
-    @SuppressWarnings("DeprecatedIsStillUsed")
+    @SuppressWarnings("deprecation")
     @Override
-    @Deprecated
     public void setBiomeGrid(BiomeGrid paramBiomeGrid, ChunkData paramChunkData) {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
