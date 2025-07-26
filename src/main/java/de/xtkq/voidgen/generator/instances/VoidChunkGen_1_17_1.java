@@ -30,9 +30,8 @@ public final class VoidChunkGen_1_17_1 extends ChunkGen {
         return new VoidBiomeProvider(this.chunkGenSettings.getBiome());
     }
 
-
-    @NotNull
     @SuppressWarnings("deprecation")
+    @NotNull
     @Override
     public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid paramBiomeGrid) {
         ChunkData chunkData = this.createChunkData(world);
