@@ -10,6 +10,10 @@ public class Configuration {
 //    @SerializedName("verbose")
 //    private boolean verbose = true;
 
+    @SerializedName("metrics")
+    private boolean metrics = true;
+
+
     public boolean getCheckForUpdates() {
         return this.checkForUpdates;
     }
@@ -17,4 +21,8 @@ public class Configuration {
 //    public boolean getVerbose() {
 //        return this.verbose;
 //    }
+
+    public boolean getMetrics() {
+        return this.metrics;
+    }
 }
