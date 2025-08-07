@@ -5,6 +5,7 @@ import de.xtkq.voidgen.events.EventManager;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.instances.*;
 import de.xtkq.voidgen.settings.ConfigManager;
+import de.xtkq.voidgen.utils.MetricsUtils;
 import de.xtkq.voidgen.utils.UpdateUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -45,6 +46,10 @@ public final class VoidGen extends JavaPlugin {
         if (configManager.getConfiguration().getCheckForUpdates()) {
             updateUtils.checkForUpdates();
             this.eventManager.initialize();
+        }
+
+        if (configManager.getConfiguration().getMetrics()) {
+            new MetricsUtils(this, 26816);
         }
     }
 
