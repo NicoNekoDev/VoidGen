@@ -35,7 +35,7 @@ public final class VoidChunkGen_1_15 extends ChunkGen3D {
                     yOffset++;
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
-                            chunkData.setBlock(x, yOffset, z, layer.getMaterial());
+                            chunkData.setBlock(x, yOffset, z, layer.getBlockData());
                         }
                     }
                 }

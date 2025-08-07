@@ -23,7 +23,7 @@ public final class VoidGen extends JavaPlugin {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
         return switch (this.chunkGenVersion) {
-            case VERSION_1_8 -> new VoidChunkGen_1_8_8(this, id);
+            case VERSION_1_8 -> throw new UnsupportedOperationException("VoidGen is not supported anymore for versions bellow 1.15!");
             case VERSION_1_15 -> new VoidChunkGen_1_15(this, id);
             case VERSION_1_17 -> new VoidChunkGen_1_17(this, id);
             case VERSION_1_17_1 -> new VoidChunkGen_1_17_1(this, id);

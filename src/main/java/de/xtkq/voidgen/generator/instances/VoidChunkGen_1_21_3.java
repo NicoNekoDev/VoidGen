@@ -4,8 +4,11 @@ import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.interfaces.ChunkGen;
 import de.xtkq.voidgen.generator.settings.LayerSettings;
 import de.xtkq.voidgen.utils.VoidBiomeProvider;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,7 +45,7 @@ public final class VoidChunkGen_1_21_3 extends ChunkGen {
                     yOffset++;
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
-                            chunkData.setBlock(x, yOffset, z, layer.getMaterial());
+                            chunkData.setBlock(x, yOffset, z,layer.getBlockData());
                         }
                     }
                 }
