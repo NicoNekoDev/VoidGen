@@ -16,6 +16,18 @@ import org.jetbrains.annotations.Nullable;
 public class BlockDataSettings {
 
     @Nullable
+    private Bamboo.Leaves bambooLeaves;
+
+    public void applyBambooLeaves(BlockData blockData) {
+        if (blockData instanceof Bamboo instance && this.bambooLeaves != null)
+            instance.setLeaves(this.bambooLeaves);
+    }
+
+    public void setBambooLeaves(String bambooLeavesString) throws IllegalArgumentException {
+        this.bambooLeaves = Bamboo.Leaves.valueOf(bambooLeavesString.toUpperCase());
+    }
+
+    @Nullable
     private Boolean waterlogged;
 
     public void applyWaterlogged(BlockData blockData) {

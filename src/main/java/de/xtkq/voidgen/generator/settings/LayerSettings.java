@@ -109,6 +109,8 @@ public class LayerSettings {
         jsonWriter.name("height").value(this.height);
         if (this.data != null) {
             jsonWriter.name("data").beginObject();
+            if (this.data.getBambooLeaves() != null)
+                jsonWriter.name("bamboo_leaves").value(this.data.getBambooLeaves().name().toLowerCase());
             if (this.data.getWaterlogged() != null)
                 jsonWriter.name("waterlogged").value(this.data.getWaterlogged());
             if (this.data.getSwitchFace() != null)
@@ -273,6 +275,13 @@ public class LayerSettings {
                     jsonReader.beginObject();
                     while (jsonReader.hasNext()) {
                         switch (jsonReader.nextName()) {
+                            case "bamboo_leaves" -> {
+                                try {
+                                    blockDataSettings.setBambooLeaves(jsonReader.nextString());
+                                } catch (Exception ex) {
+                                    logger.warning("Unknown bamboo leaves \"" + jsonReader.nextString() + "\", skipped!");
+                                }
+                            }
                             case "waterlogged" -> blockDataSettings.setWaterlogged(jsonReader.nextBoolean());
                             case "switch_face" -> {
                                 try {
