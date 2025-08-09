@@ -59,6 +59,7 @@ public final class VoidGen extends JavaPlugin {
         this.eventManager.terminate();
     }
 
+    @SuppressWarnings("DataFlowIssue")
     private ChunkGenVersion setupVoidChunkGen() {
         VoidChunkGenInfo annotation;
         String bukkitVersion = Bukkit.getBukkitVersion().split("-")[0];

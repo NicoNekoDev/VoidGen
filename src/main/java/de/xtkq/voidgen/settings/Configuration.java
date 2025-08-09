@@ -10,7 +10,7 @@ public class Configuration {
 //    @SerializedName("verbose")
 //    private boolean verbose = true;
 
-    @SerializedName("metrics")
+    @SerializedName("enableMetrics")
     private boolean metrics = true;
 
 
