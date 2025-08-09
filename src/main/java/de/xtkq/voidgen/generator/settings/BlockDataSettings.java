@@ -43,6 +43,10 @@ public class BlockDataSettings {
             instance.setHinge(this.doorHinge);
     }
 
+    public void setDoorHinge(String doorHingeString) throws IllegalArgumentException {
+        this.doorHinge = Door.Hinge.valueOf(doorHingeString.toUpperCase());
+    }
+
     @Nullable
     private Boolean isInWall;
 
@@ -57,6 +61,10 @@ public class BlockDataSettings {
     public void applyFacing(BlockData blockData) {
         if (blockData instanceof Directional instance && this.facing != null)
             instance.setFacing(this.facing);
+    }
+
+    public void setFacing(String facingString) throws IllegalArgumentException {
+        this.facing = BlockFace.valueOf(facingString.toUpperCase());
     }
 
     @Nullable
@@ -99,6 +107,10 @@ public class BlockDataSettings {
             instance.setRotation(this.rotation);
     }
 
+    public void setRotation(String rotationString) throws IllegalArgumentException {
+        this.rotation = BlockFace.valueOf(rotationString.toUpperCase());
+    }
+
     @Nullable
     private Integer leavesDistance;
 
@@ -123,6 +135,10 @@ public class BlockDataSettings {
             instance.setAxis(this.axis);
     }
 
+    public void setAxis(String axisString) throws IllegalArgumentException {
+        this.axis = Axis.valueOf(axisString.toUpperCase());
+    }
+
     @Nullable
     private Integer age;
 
@@ -137,6 +153,10 @@ public class BlockDataSettings {
     public void applySculkPhase(BlockData blockData) {
         if (blockData instanceof SculkSensor instance && this.sculkPhase != null)
             instance.setPhase(this.sculkPhase);
+    }
+
+    public void setSculkPhase(String sculkPhaseString) throws IllegalArgumentException {
+        this.sculkPhase = SculkSensor.Phase.valueOf(sculkPhaseString.toUpperCase());
     }
 
     @Nullable
@@ -155,6 +175,10 @@ public class BlockDataSettings {
             instance.setState(this.cropState);
     }
 
+    public void setCropState(String cropStateString) throws IllegalArgumentException {
+        this.cropState = CropState.valueOf(cropStateString.toUpperCase());
+    }
+
     @Nullable
     private DyeColor color;
 
@@ -163,12 +187,20 @@ public class BlockDataSettings {
             instance.setColor(this.color);
     }
 
+    public void setColor(String colorString) throws IllegalArgumentException {
+        this.color = DyeColor.valueOf(colorString.toUpperCase());
+    }
+
     @Nullable
     private Bed.Part bedPart;
 
     public void applyBedPart(BlockData blockData) {
         if (blockData instanceof Bed instance && this.bedPart != null)
             instance.setPart(this.bedPart);
+    }
+
+    public void setBedPart(String bedPartString) throws IllegalArgumentException {
+        this.bedPart = Bed.Part.valueOf(bedPartString.toUpperCase());
     }
 
     @Nullable
@@ -187,6 +219,10 @@ public class BlockDataSettings {
             instance.setAttachment(this.bellAttachment);
     }
 
+    public void setBellAttachment(String bellAttachmentString) throws IllegalArgumentException {
+        this.bellAttachment = Bell.Attachment.valueOf(bellAttachmentString.toUpperCase());
+    }
+
     @Nullable
     private BigDripleaf.Tilt dripleafTilt;
 
@@ -195,12 +231,20 @@ public class BlockDataSettings {
             instance.setTilt(this.dripleafTilt);
     }
 
+    public void setDripleafTilt(String dripleafTiltString) throws IllegalArgumentException {
+        this.dripleafTilt = BigDripleaf.Tilt.valueOf(dripleafTiltString.toUpperCase());
+    }
+
     @Nullable
     private Bisected.Half bisectedHalf;
 
     public void applyBisectedHalf(BlockData blockData) {
         if (blockData instanceof Bisected instance && this.bisectedHalf != null)
             instance.setHalf(this.bisectedHalf);
+    }
+
+    public void setBisectedHalf(String bisectedHalfString) throws IllegalArgumentException {
+        this.bisectedHalf = Bisected.Half.valueOf(bisectedHalfString.toUpperCase());
     }
 
     @Nullable
@@ -259,6 +303,10 @@ public class BlockDataSettings {
             instance.setType(this.chestType);
     }
 
+    public void setChestType(String chestTypeString) throws IllegalArgumentException {
+        this.chestType = Chest.Type.valueOf(chestTypeString.toUpperCase());
+    }
+
     @Nullable
     private Boolean conditional;
 
@@ -275,12 +323,20 @@ public class BlockDataSettings {
             instance.setMode(this.comparatorMode);
     }
 
+    public void setComparatorMode(String comparatorModeString) throws IllegalArgumentException {
+        this.comparatorMode = Comparator.Mode.valueOf(comparatorModeString.toUpperCase());
+    }
+
     @Nullable
     private Crafter.Orientation crafterOrientation;
 
     public void applyCrafterOrientation(BlockData blockData) {
         if (blockData instanceof Crafter instance && this.crafterOrientation != null)
             instance.setOrientation(this.crafterOrientation);
+    }
+
+    public void setCrafterOrientation(String crafterOrientationString) throws IllegalArgumentException {
+        this.crafterOrientation = Crafter.Orientation.valueOf(crafterOrientationString.toUpperCase());
     }
 
     @Nullable
@@ -300,11 +356,11 @@ public class BlockDataSettings {
     }
 
     @Nullable
-    private Boolean hasEye;
+    private Boolean enderEye;
 
     public void applyHasEye(BlockData blockData) {
-        if (blockData instanceof EndPortalFrame instance && this.hasEye != null)
-            instance.setEye(this.hasEye);
+        if (blockData instanceof EndPortalFrame instance && this.enderEye != null)
+            instance.setEye(this.enderEye);
     }
 
     @Nullable
@@ -347,6 +403,10 @@ public class BlockDataSettings {
             instance.setOrientation(this.jigsawOrientation);
     }
 
+    public void setJigsawOrientation(String jigsawOrientationString) throws IllegalArgumentException {
+        this.jigsawOrientation = Jigsaw.Orientation.valueOf(jigsawOrientationString.toUpperCase());
+    }
+
     @Nullable
     private Integer level;
 
@@ -361,6 +421,10 @@ public class BlockDataSettings {
     public void applyInstrument(BlockData blockData) {
         if (blockData instanceof NoteBlock instance && this.instrument != null)
             instance.setInstrument(this.instrument);
+    }
+
+    public void setInstrument(String instrumentString) throws IllegalArgumentException {
+        this.instrument = Instrument.valueOf(instrumentString.toUpperCase());
     }
 
     @Nullable
@@ -387,6 +451,10 @@ public class BlockDataSettings {
             instance.setThickness(this.dripstoneThickness);
     }
 
+    public void setDripstoneThickness(String dripstoneThicknessString) throws IllegalArgumentException {
+        this.dripstoneThickness = PointedDripstone.Thickness.valueOf(dripstoneThicknessString.toUpperCase());
+    }
+
     @Nullable
     private BlockFace dripstoneVerticalDirection;
 
@@ -395,12 +463,20 @@ public class BlockDataSettings {
             instance.setVerticalDirection(this.dripstoneVerticalDirection);
     }
 
+    public void setDripstoneVerticalDirection(String dripstoneVerticalDirectionString) throws IllegalArgumentException {
+        this.dripstoneVerticalDirection = BlockFace.valueOf(dripstoneVerticalDirectionString.toUpperCase());
+    }
+
     @Nullable
     private Rail.Shape railShape;
 
     public void applyRailShape(BlockData blockData) {
         if (blockData instanceof Rail instance && this.railShape != null)
             instance.setShape(this.railShape);
+    }
+
+    public void setRailShape(String railShapeString) throws IllegalArgumentException {
+        this.railShape = Rail.Shape.valueOf(railShapeString.toUpperCase());
     }
 
     @Nullable
@@ -483,6 +559,10 @@ public class BlockDataSettings {
             instance.setType(this.slabType);
     }
 
+    public void setSlabType(String slabTypeString) throws IllegalArgumentException {
+        this.slabType = Slab.Type.valueOf(slabTypeString.toUpperCase());
+    }
+
     @Nullable
     private Integer snowLayers;
 
@@ -507,6 +587,10 @@ public class BlockDataSettings {
             instance.setShape(this.stairsShape);
     }
 
+    public void setStairsShape(String stairsShapeString) throws IllegalArgumentException {
+        this.stairsShape = Stairs.Shape.valueOf(stairsShapeString.toUpperCase());
+    }
+
     @Nullable
     private StructureBlock.Mode structureBlockMode;
 
@@ -515,12 +599,20 @@ public class BlockDataSettings {
             instance.setMode(this.structureBlockMode);
     }
 
+    public void setStructureBlockMode(String structureBlockModeString) throws IllegalArgumentException {
+        this.structureBlockMode = StructureBlock.Mode.valueOf(structureBlockModeString.toUpperCase());
+    }
+
     @Nullable
     private TechnicalPiston.Type pistonType;
 
     public void applyPistonType(BlockData blockData) {
         if (blockData instanceof TechnicalPiston instance && this.pistonType != null)
             instance.setType(this.pistonType);
+    }
+
+    public void setPistonType(String pistonTypeString) throws IllegalArgumentException {
+        this.pistonType = TechnicalPiston.Type.valueOf(pistonTypeString.toUpperCase());
     }
 
     @Nullable
@@ -539,12 +631,20 @@ public class BlockDataSettings {
             instance.setTrialSpawnerState(this.trialSpawnerState);
     }
 
+    public void setTrialSpawnerState(String trialSpawnerStateString) throws IllegalArgumentException {
+        this.trialSpawnerState = TrialSpawner.State.valueOf(trialSpawnerStateString.toUpperCase());
+    }
+
     @Nullable
     private Vault.State vaultState;
 
     public void applyVaultState(BlockData blockData) {
         if (blockData instanceof Vault instance && this.vaultState != null)
             instance.setTrialSpawnerState(this.vaultState);
+    }
+
+    public void setVaultState(String vaultStateString) throws IllegalArgumentException {
+        this.vaultState = Vault.State.valueOf(vaultStateString.toUpperCase());
     }
 
     @Nullable
