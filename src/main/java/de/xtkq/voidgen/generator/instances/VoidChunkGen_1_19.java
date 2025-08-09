@@ -41,7 +41,7 @@ public final class VoidChunkGen_1_19 extends ChunkGen {
                 for (int y = 0; y < layer.getHeight(); y++) {
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
-                            chunkData.setBlock(x, yOffset, z, layer.getBlockData());
+                            chunkData.setBlock(x, yOffset, z, layer.composeBlockData());
                         }
                     }
                     yOffset++;
