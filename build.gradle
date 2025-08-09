@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.gradleup.shadow' version '9.0.0-beta12'
+    id 'com.gradleup.shadow' version '9.0.0'
 }
 
 build {
@@ -8,7 +8,8 @@ build {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 shadowJar {
@@ -51,7 +52,7 @@ processResources {
                       group  : project.plugin_group, website: project.plugin_website,
                       author : project.plugin_author]
     inputs.properties properties
-    filteringCharset 'UTF-8'
+    filteringCharset = 'UTF-8'
     filesMatching('plugin.yml') {
         expand properties
     }
