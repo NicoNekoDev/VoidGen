@@ -15,6 +15,7 @@ java {
 shadowJar {
     relocate('com.google.gson', 'de.xtkq.voidgen.libs.gson')
     relocate('com.tcoded.folialib', "de.xtkq.voidgen.libs.folialib")
+    archiveClassifier = ''
 }
 
 repositories {
