@@ -39,12 +39,12 @@ public final class VoidChunkGen_1_17_1 extends ChunkGen {
         if (this.chunkGenSettings.getLayers() != null) {
             for (LayerSettings layer : this.chunkGenSettings.getLayers()) {
                 for (int y = 0; y < layer.getHeight(); y++) {
-                    yOffset++;
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
                             chunkData.setBlock(x, yOffset, z, layer.getBlockData());
                         }
                     }
+                    yOffset++;
                 }
             }
         } else if (this.chunkGenSettings.isBedrock())
