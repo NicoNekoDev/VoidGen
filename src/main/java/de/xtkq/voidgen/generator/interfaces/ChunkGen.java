@@ -17,26 +17,32 @@ public abstract class ChunkGen extends ChunkGenerator {
     private final JavaPlugin javaPlugin;
     protected ChunkGenSettings chunkGenSettings;
 
-    public ChunkGen(JavaPlugin javaPlugin, String paramIdentifier) {
+    public ChunkGen(JavaPlugin javaPlugin, String paramIdentifier, String worldName) {
         this.javaPlugin = javaPlugin;
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter(this.javaPlugin));
         builder.setStrictness(Strictness.LENIENT);
         Gson gson = builder.create();
-
+        this.javaPlugin.getLogger().info("");
+        this.javaPlugin.getLogger().info("> ——————————————————————[ " + worldName + " ]——————————————————————");
+        this.javaPlugin.getLogger().info("> ");
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
-            this.javaPlugin.getLogger().info("Generator settings have not been set. Using default values:");
+            this.javaPlugin.getLogger().info("> Generator settings have not been set, we will use the default settings:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
+                this.javaPlugin.getLogger().info("> Generator settings have been loaded:");
             } catch (JsonSyntaxException jse) {
                 this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
-                this.javaPlugin.getLogger().info("Generator settings \"" + paramIdentifier + "\" syntax is not valid. Using default values:");
+                this.javaPlugin.getLogger().info("> Generator settings syntax is not valid, we will use the default settings:");
             }
         }
         // Posting the currently used chunkGenSettings to console.
-        this.javaPlugin.getLogger().warning(gson.toJson(this.chunkGenSettings));
+        this.javaPlugin.getLogger().info("> " + gson.toJson(this.chunkGenSettings));
+        this.javaPlugin.getLogger().info("> ");
+        this.javaPlugin.getLogger().info("> ——————————————————————[ " + worldName + " ]——————————————————————");
+        this.javaPlugin.getLogger().info("");
     }
 
     public abstract Biome getDefaultBiome();

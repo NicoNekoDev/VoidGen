@@ -13,8 +13,8 @@ import java.util.Random;
 @VoidChunkGenInfo(versions = {"1.17"})
 public final class VoidChunkGen_1_17 extends ChunkGen3DExtended {
 
-    public VoidChunkGen_1_17(JavaPlugin paramPlugin, String paramIdentifier) {
-        super(paramPlugin, paramIdentifier);
+    public VoidChunkGen_1_17(JavaPlugin paramPlugin, String paramIdentifier, String worldName) {
+        super(paramPlugin, paramIdentifier, worldName);
     }
 
     @Override

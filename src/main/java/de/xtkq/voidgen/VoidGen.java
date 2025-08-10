@@ -28,11 +28,11 @@ public final class VoidGen extends JavaPlugin {
                 this.setEnabled(false);
                 throw new UnsupportedOperationException("VoidGen is not supported anymore for versions bellow 1.15!");
             }
-            case VERSION_1_15 -> new VoidChunkGen_1_15(this, id);
-            case VERSION_1_17 -> new VoidChunkGen_1_17(this, id);
-            case VERSION_1_17_1 -> new VoidChunkGen_1_17_1(this, id);
-            case VERSION_1_19 -> new VoidChunkGen_1_19(this, id);
-            default -> new VoidChunkGen_1_21_3(this, id);
+            case VERSION_1_15 -> new VoidChunkGen_1_15(this, id, worldName);
+            case VERSION_1_17 -> new VoidChunkGen_1_17(this, id, worldName);
+            case VERSION_1_17_1 -> new VoidChunkGen_1_17_1(this, id, worldName);
+            case VERSION_1_19 -> new VoidChunkGen_1_19(this, id, worldName);
+            default -> new VoidChunkGen_1_21_3(this, id, worldName);
         };
     }
 

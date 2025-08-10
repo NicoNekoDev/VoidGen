@@ -4,8 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class ChunkGen2D extends ChunkGen implements IChunkGenBiomeGrid {
 
-    public ChunkGen2D(JavaPlugin paramPlugin, String paramIdentifier) {
-        super(paramPlugin, paramIdentifier);
+    public ChunkGen2D(JavaPlugin paramPlugin, String paramIdentifier, String worldName) {
+        super(paramPlugin, paramIdentifier, worldName);
     }
 
     @SuppressWarnings("deprecation")

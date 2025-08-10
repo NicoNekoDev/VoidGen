@@ -13,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-@VoidChunkGenInfo(versions = {"1.21.3", "1.21.4", "1.21.5", "1.21.6"})
+@VoidChunkGenInfo(versions = {"1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8"})
 public final class VoidChunkGen_1_21_3 extends ChunkGen {
 
-    public VoidChunkGen_1_21_3(JavaPlugin javaPlugin, String paramIdentifier) {
-        super(javaPlugin, paramIdentifier);
+    public VoidChunkGen_1_21_3(JavaPlugin javaPlugin, String paramIdentifier, String worldName) {
+        super(javaPlugin, paramIdentifier, worldName);
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class VoidChunkGen_1_21_3 extends ChunkGen {
                 for (int y = 0; y < layer.getHeight(); y++) {
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
-                            chunkData.setBlock(x, yOffset, z,layer.composeBlockData());
+                            chunkData.setBlock(x, yOffset, z, layer.composeBlockData());
                         }
                     }
                     yOffset++;
