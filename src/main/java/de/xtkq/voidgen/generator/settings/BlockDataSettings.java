@@ -10,10 +10,41 @@ import org.bukkit.material.Colorable;
 import org.bukkit.material.Crops;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SuppressWarnings("deprecation")
 @Getter
 @Setter
 public class BlockDataSettings {
+
+    @Nullable
+    private Map<BlockFace, Wall.Height> wallHeights;
+
+    public void applyWallHeight(BlockData blockData) {
+        if (blockData instanceof Wall instance && this.wallHeights != null)
+            this.wallHeights.forEach(instance::setHeight);
+    }
+
+    public void setWallHeights(String faceString, String wallHeightString) throws IllegalArgumentException {
+        if (this.wallHeights == null)
+            this.wallHeights = new HashMap<>();
+        this.wallHeights.put(BlockFace.valueOf(faceString.toUpperCase()), Wall.Height.valueOf(wallHeightString.toUpperCase()));
+    }
+
+    @Nullable
+    private Map<BlockFace, RedstoneWire.Connection> redstoneWireConnections;
+
+    public void applyRedstoneWireConnections(BlockData blockData) {
+        if (blockData instanceof RedstoneWire instance && this.redstoneWireConnections != null)
+            this.redstoneWireConnections.forEach(instance::setFace);
+    }
+
+    public void setRedstoneWireConnections(String faceString, String redstoneWireConnectionString) throws IllegalArgumentException {
+        if (this.redstoneWireConnections == null)
+            this.redstoneWireConnections = new HashMap<>();
+        this.redstoneWireConnections.put(BlockFace.valueOf(faceString.toUpperCase()), RedstoneWire.Connection.valueOf(redstoneWireConnectionString.toUpperCase()));
+    }
 
     @Nullable
     private Bamboo.Leaves bambooLeaves;

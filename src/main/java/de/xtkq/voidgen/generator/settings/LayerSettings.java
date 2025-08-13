@@ -7,11 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.RedstoneWire;
+import org.bukkit.block.data.type.Wall;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Getter
@@ -31,6 +35,8 @@ public class LayerSettings {
         BlockData blockData = this.material.createBlockData();
         if (this.data == null)
             return blockData;
+        this.data.applyWallHeight(blockData);
+        this.data.applyRedstoneWireConnections(blockData);
         this.data.applyInverted(blockData);
         this.data.applyCropState(blockData);
         this.data.applyHoneyLevel(blockData);
@@ -109,6 +115,18 @@ public class LayerSettings {
         jsonWriter.name("height").value(this.height);
         if (this.data != null) {
             jsonWriter.name("data").beginObject();
+            if (this.data.getWallHeights() != null && !this.data.getWallHeights().isEmpty()) {
+                jsonWriter.name("wall_heights").beginObject();
+                for (Map.Entry<BlockFace, Wall.Height> entry : this.data.getWallHeights().entrySet())
+                    jsonWriter.name(entry.getKey().name().toLowerCase()).value(entry.getValue().name().toLowerCase());
+                jsonWriter.endObject();
+            }
+            if (this.data.getRedstoneWireConnections() != null && !this.data.getRedstoneWireConnections().isEmpty()) {
+                jsonWriter.name("redstone_wire_connections").beginObject();
+                for (Map.Entry<BlockFace, RedstoneWire.Connection> entry : this.data.getRedstoneWireConnections().entrySet())
+                    jsonWriter.name(entry.getKey().name().toLowerCase()).value(entry.getValue().name().toLowerCase());
+                jsonWriter.endObject();
+            }
             if (this.data.getBambooLeaves() != null)
                 jsonWriter.name("bamboo_leaves").value(this.data.getBambooLeaves().name().toLowerCase());
             if (this.data.getWaterlogged() != null)
@@ -275,103 +293,142 @@ public class LayerSettings {
                     jsonReader.beginObject();
                     while (jsonReader.hasNext()) {
                         switch (jsonReader.nextName()) {
+                            case "wall_heights" -> {
+                                jsonReader.beginObject();
+                                while (jsonReader.hasNext()) {
+                                    String faceString = jsonReader.nextName();
+                                    String wallHeightString = jsonReader.nextString();
+                                    try {
+                                        blockDataSettings.setWallHeights(faceString, wallHeightString);
+                                    } catch (Exception ex) {
+                                        logger.warning("Unknown face \"" + faceString + "\" or wall height \"" + wallHeightString + "\", skipped!");
+                                    }
+                                }
+                                jsonReader.endObject();
+                            }
+                            case "redstone_wire_connections" -> {
+                                jsonReader.beginObject();
+                                while (jsonReader.hasNext()) {
+                                    String faceString = jsonReader.nextName();
+                                    String redstoneWireConnectionString = jsonReader.nextString();
+                                    try {
+                                        blockDataSettings.setRedstoneWireConnections(faceString, redstoneWireConnectionString);
+                                    } catch (Exception ex) {
+                                        logger.warning("Unknown face \"" + faceString + "\" or redstone wire connection \"" + redstoneWireConnectionString + "\", skipped!");
+                                    }
+                                }
+                                jsonReader.endObject();
+                            }
                             case "bamboo_leaves" -> {
+                                String bambooLeavesString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setBambooLeaves(jsonReader.nextString());
+                                    blockDataSettings.setBambooLeaves(bambooLeavesString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown bamboo leaves \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown bamboo leaves \"" + bambooLeavesString + "\", skipped!");
                                 }
                             }
                             case "waterlogged" -> blockDataSettings.setWaterlogged(jsonReader.nextBoolean());
                             case "switch_face" -> {
+                                String switchFaceString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setSwitchFace(jsonReader.nextString());
+                                    blockDataSettings.setSwitchFace(switchFaceString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown switch face \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown switch face \"" + switchFaceString + "\", skipped!");
                                 }
                             }
                             case "door_hinge" -> {
+                                String doorHingeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setDoorHinge(jsonReader.nextString());
+                                    blockDataSettings.setDoorHinge(doorHingeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown door hinge \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown door hinge \"" + doorHingeString + "\", skipped!");
                                 }
                             }
                             case "in_wall" -> blockDataSettings.setIsInWall(jsonReader.nextBoolean());
                             case "facing" -> {
+                                String facingString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setFacing(jsonReader.nextString());
+                                    blockDataSettings.setFacing(facingString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown facing \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown facing \"" + facingString + "\", skipped!");
                                 }
                             }
                             case "open" -> blockDataSettings.setOpen(jsonReader.nextBoolean());
                             case "power" -> blockDataSettings.setPower(jsonReader.nextInt());
                             case "attached" -> blockDataSettings.setAttached(jsonReader.nextBoolean());
                             case "rotation" -> {
+                                String rotationString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setRotation(jsonReader.nextString());
+                                    blockDataSettings.setRotation(rotationString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown rotation \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown rotation \"" + rotationString + "\", skipped!");
                                 }
                             }
                             case "leaves_distance" -> blockDataSettings.setLeavesDistance(jsonReader.nextInt());
                             case "leaves_persistent" -> blockDataSettings.setLeavesPersistent(jsonReader.nextBoolean());
                             case "axis" -> {
+                                String axisString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setAxis(jsonReader.nextString());
+                                    blockDataSettings.setAxis(axisString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown axis \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown axis \"" + axisString + "\", skipped!");
                                 }
                             }
                             case "age" -> blockDataSettings.setAge(jsonReader.nextInt());
                             case "sculk_phase" -> {
+                                String sculkPhaseString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setSculkPhase(jsonReader.nextString());
+                                    blockDataSettings.setSculkPhase(sculkPhaseString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown sculk phase \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown sculk phase \"" + sculkPhaseString + "\", skipped!");
                                 }
                             }
                             case "inverted" -> blockDataSettings.setInverted(jsonReader.nextBoolean());
                             case "crop_state" -> {
+                                String cropStateString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setCropState(jsonReader.nextString());
+                                    blockDataSettings.setCropState(cropStateString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown crop state \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown crop state \"" + cropStateString + "\", skipped!");
                                 }
                             }
                             case "color" -> {
+                                String colorString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setColor(jsonReader.nextString());
+                                    blockDataSettings.setColor(colorString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown color \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown color \"" + colorString + "\", skipped!");
                                 }
                             }
                             case "bed_part" -> {
+                                String bedPartString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setBedPart(jsonReader.nextString());
+                                    blockDataSettings.setBedPart(bedPartString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown bed part \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown bed part \"" + bedPartString + "\", skipped!");
                                 }
                             }
                             case "honey_level" -> blockDataSettings.setHoneyLevel(jsonReader.nextInt());
                             case "bell_attachment" -> {
+                                String bellAttachmentString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setBellAttachment(jsonReader.nextString());
+                                    blockDataSettings.setBellAttachment(bellAttachmentString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown bell attachment \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown bell attachment \"" + bellAttachmentString + "\", skipped!");
                                 }
                             }
                             case "dripleaf_tilt" -> {
+                                String dripleafTiltString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setDripleafTilt(jsonReader.nextString());
+                                    blockDataSettings.setDripleafTilt(dripleafTiltString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown dripleaf tilt \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown dripleaf tilt \"" + dripleafTiltString + "\", skipped!");
                                 }
                             }
                             case "bisected_half" -> {
+                                String bisectedHalfString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setBisectedHalf(jsonReader.nextString());
+                                    blockDataSettings.setBisectedHalf(bisectedHalfString);
                                 } catch (Exception ex) {
                                     logger.warning("Unknown bisected half \"" + jsonReader.nextString() + "\", skipped!");
                                 }
@@ -383,25 +440,28 @@ public class LayerSettings {
                             case "lit" -> blockDataSettings.setLit(jsonReader.nextBoolean());
                             case "berries" -> blockDataSettings.setBerries(jsonReader.nextBoolean());
                             case "chest_type" -> {
+                                String chestTypeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setChestType(jsonReader.nextString());
+                                    blockDataSettings.setChestType(chestTypeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown chest type \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown chest type \"" + chestTypeString + "\", skipped!");
                                 }
                             }
                             case "conditional" -> blockDataSettings.setConditional(jsonReader.nextBoolean());
                             case "comparator_mode" -> {
+                                String comparatorModeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setComparatorMode(jsonReader.nextString());
+                                    blockDataSettings.setComparatorMode(comparatorModeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown comparator mode \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown comparator mode \"" + comparatorModeString + "\", skipped!");
                                 }
                             }
                             case "crafter_orientation" -> {
+                                String crafterOrientationString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setCrafterOrientation(jsonReader.nextString());
+                                    blockDataSettings.setCrafterOrientation(crafterOrientationString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown crafter orientation \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown crafter orientation \"" + crafterOrientationString + "\", skipped!");
                                 }
                             }
                             case "crafter_triggered" -> blockDataSettings.setCrafterTriggered(jsonReader.nextBoolean());
@@ -411,41 +471,46 @@ public class LayerSettings {
                             case "hatch" -> blockDataSettings.setHatch(jsonReader.nextInt());
                             case "hopper_enabled" -> blockDataSettings.setHopperEnabled(jsonReader.nextBoolean());
                             case "jigsaw_orientation" -> {
+                                String jigsawOrientationString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setJigsawOrientation(jsonReader.nextString());
+                                    blockDataSettings.setJigsawOrientation(jigsawOrientationString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown jigsaw orientation \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown jigsaw orientation \"" + jigsawOrientationString + "\", skipped!");
                                 }
                             }
                             case "level" -> blockDataSettings.setLevel(jsonReader.nextInt());
                             case "instrument" -> {
+                                String instrumentString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setInstrument(jsonReader.nextString());
+                                    blockDataSettings.setInstrument(instrumentString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown instrument \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown instrument \"" + instrumentString + "\", skipped!");
                                 }
                             }
                             case "note" -> blockDataSettings.setNote(jsonReader.nextInt());
                             case "extended" -> blockDataSettings.setExtended(jsonReader.nextBoolean());
                             case "dripstone_thickness" -> {
+                                String dripstoneThicknessString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setDripstoneThickness(jsonReader.nextString());
+                                    blockDataSettings.setDripstoneThickness(dripstoneThicknessString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown dripstone thickness \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown dripstone thickness \"" + dripstoneThicknessString + "\", skipped!");
                                 }
                             }
                             case "dripstone_vertical_direction" -> {
+                                String dripstoneVerticalDirectionString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setDripstoneVerticalDirection(jsonReader.nextString());
+                                    blockDataSettings.setDripstoneVerticalDirection(dripstoneVerticalDirectionString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown dripstone vertical direction \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown dripstone vertical direction \"" + dripstoneVerticalDirectionString + "\", skipped!");
                                 }
                             }
                             case "rail_shape" -> {
+                                String railShapeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setRailShape(jsonReader.nextString());
+                                    blockDataSettings.setRailShape(railShapeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown rail shape \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown rail shape \"" + railShapeString + "\", skipped!");
                                 }
                             }
                             case "repeater_delay" -> blockDataSettings.setRepeaterDelay(jsonReader.nextInt());
@@ -461,48 +526,54 @@ public class LayerSettings {
                                     blockDataSettings.setSculkCatalystBloom(jsonReader.nextBoolean());
                             case "pickles" -> blockDataSettings.setPickles(jsonReader.nextInt());
                             case "slab_type" -> {
+                                String slabTypeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setSlabType(jsonReader.nextString());
+                                    blockDataSettings.setSlabType(slabTypeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown slab type \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown slab type \"" + slabTypeString + "\", skipped!");
                                 }
                             }
                             case "snow_layers" -> blockDataSettings.setSnowLayers(jsonReader.nextInt());
                             case "stairs_shape" -> {
+                                String stairsShapeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setStairsShape(jsonReader.nextString());
+                                    blockDataSettings.setStairsShape(stairsShapeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown stairs shape \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown stairs shape \"" + stairsShapeString + "\", skipped!");
                                 }
                             }
                             case "structure_block_mode" -> {
+                                String structureBlockModeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setStructureBlockMode(jsonReader.nextString());
+                                    blockDataSettings.setStructureBlockMode(structureBlockModeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown structure block mode \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown structure block mode \"" + structureBlockModeString + "\", skipped!");
                                 }
                             }
                             case "piston_type" -> {
+                                String pistonTypeString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setPistonType(jsonReader.nextString());
+                                    blockDataSettings.setPistonType(pistonTypeString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown piston type \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown piston type \"" + pistonTypeString + "\", skipped!");
                                 }
                             }
                             case "trial_spawner_ominous" ->
                                     blockDataSettings.setTrialSpawnerOminous(jsonReader.nextBoolean());
                             case "trial_spawner_state" -> {
+                                String trialSpawnerStateString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setTrialSpawnerState(jsonReader.nextString());
+                                    blockDataSettings.setTrialSpawnerState(trialSpawnerStateString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown trial spawner state \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown trial spawner state \"" + trialSpawnerStateString + "\", skipped!");
                                 }
                             }
                             case "vault_state" -> {
+                                String vaultStateString = jsonReader.nextString();
                                 try {
-                                    blockDataSettings.setVaultState(jsonReader.nextString());
+                                    blockDataSettings.setVaultState(vaultStateString);
                                 } catch (Exception ex) {
-                                    logger.warning("Unknown vault state \"" + jsonReader.nextString() + "\", skipped!");
+                                    logger.warning("Unknown vault state \"" + vaultStateString + "\", skipped!");
                                 }
                             }
                             case "tripwire_hook_disarmed" ->
