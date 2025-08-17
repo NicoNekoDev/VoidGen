@@ -35,8 +35,12 @@ public class LayerSettings {
         BlockData blockData = this.material.createBlockData();
         if (this.data == null)
             return blockData;
+        this.data.applyFaces(blockData);
         this.data.applyWallHeight(blockData);
+        this.data.applyMossyCarpetHeights(blockData);
         this.data.applyRedstoneWireConnections(blockData);
+        this.data.applyWallUp(blockData);
+        this.data.applyMossyCarpetBottom(blockData);
         this.data.applyInverted(blockData);
         this.data.applyCropState(blockData);
         this.data.applyHoneyLevel(blockData);
@@ -69,8 +73,9 @@ public class LayerSettings {
         this.data.applySwitchFace(blockData);
         this.data.applyDoorHinge(blockData);
         this.data.applyTurtleEggs(blockData);
-        this.data.applyTripwireHookDisarmed(blockData);
+        this.data.applyTripwireDisarmed(blockData);
         this.data.applyVaultState(blockData);
+        this.data.applyVaultOminous(blockData);
         this.data.applyTrialSpawnerState(blockData);
         this.data.applyTrialSpawnerOminous(blockData);
         this.data.applyPistonType(blockData);
@@ -80,9 +85,9 @@ public class LayerSettings {
         this.data.applySlabType(blockData);
         this.data.applyPickles(blockData);
         this.data.applySculkPhase(blockData);
+        this.data.applySculkShriekerCanSummon(blockData);
         this.data.applySculkShriekerShrieking(blockData);
         this.data.applySculkCatalystBloom(blockData);
-        this.data.applySculkShriekerCanSummon(blockData);
         this.data.applyScaffoldingBottom(blockData);
         this.data.applyScaffoldingDistance(blockData);
         this.data.applyCharges(blockData);
@@ -106,6 +111,11 @@ public class LayerSettings {
         this.data.applyBerries(blockData);
         this.data.applyCandles(blockData);
         this.data.applySignalFire(blockData);
+        this.data.applyFlowerAmount(blockData);
+        this.data.applySegmentAmount(blockData);
+        this.data.applyCreakingHeartState(blockData);
+        this.data.applyCreakingHeartActive(blockData);
+        this.data.applyCreakingHeartNatural(blockData);
         return blockData;
     }
 
@@ -121,12 +131,28 @@ public class LayerSettings {
                     jsonWriter.name(entry.getKey().name().toLowerCase()).value(entry.getValue().name().toLowerCase());
                 jsonWriter.endObject();
             }
+            if (this.data.getMossyCarpetHeights() != null && !this.data.getMossyCarpetHeights().isEmpty()) {
+                jsonWriter.name("mossy_carpet_heights").beginObject();
+                for (Map.Entry<BlockFace, Enum<?>> entry : this.data.getMossyCarpetHeights().entrySet())
+                    jsonWriter.name(entry.getKey().name().toLowerCase()).value(entry.getValue().name().toLowerCase());
+                jsonWriter.endObject();
+            }
             if (this.data.getRedstoneWireConnections() != null && !this.data.getRedstoneWireConnections().isEmpty()) {
-                jsonWriter.name("redstone_wire_connections").beginObject();
+                jsonWriter.name("redstone_connections").beginObject();
                 for (Map.Entry<BlockFace, RedstoneWire.Connection> entry : this.data.getRedstoneWireConnections().entrySet())
                     jsonWriter.name(entry.getKey().name().toLowerCase()).value(entry.getValue().name().toLowerCase());
                 jsonWriter.endObject();
             }
+            if (this.data.getFaces() != null && !this.data.getFaces().isEmpty()) {
+                jsonWriter.name("faces").beginObject();
+                for (Map.Entry<BlockFace, Boolean> entry : this.data.getFaces().entrySet())
+                    jsonWriter.name(entry.getKey().name().toLowerCase()).value(entry.getValue());
+                jsonWriter.endObject();
+            }
+            if (this.data.getWallUp() != null)
+                jsonWriter.name("wall_up").value(this.data.getWallUp());
+            if (this.data.getMossyCarpetBottom() != null)
+                jsonWriter.name("mossy_carpet_bottom").value(this.data.getMossyCarpetBottom());
             if (this.data.getBambooLeaves() != null)
                 jsonWriter.name("bamboo_leaves").value(this.data.getBambooLeaves().name().toLowerCase());
             if (this.data.getWaterlogged() != null)
@@ -195,6 +221,8 @@ public class LayerSettings {
                 jsonWriter.name("crafter_orientation").value(this.data.getCrafterOrientation().name().toLowerCase());
             if (this.data.getCrafterTriggered() != null)
                 jsonWriter.name("crafter_triggered").value(this.data.getCrafterTriggered());
+            if (this.data.getCrafterCrafting() != null)
+                jsonWriter.name("crafter_crafting").value(this.data.getCrafterCrafting());
             if (this.data.getEnderEye() != null)
                 jsonWriter.name("ender_eye").value(this.data.getEnderEye());
             if (this.data.getMoisture() != null)
@@ -214,7 +242,7 @@ public class LayerSettings {
             if (this.data.getNote() != null)
                 jsonWriter.name("note").value(this.data.getNote());
             if (this.data.getExtended() != null)
-                jsonWriter.name("extended").value(this.data.getExtended());
+                jsonWriter.name("piston_extended").value(this.data.getExtended());
             if (this.data.getDripstoneThickness() != null)
                 jsonWriter.name("dripstone_thickness").value(this.data.getDripstoneThickness().name().toLowerCase());
             if (this.data.getDripstoneVerticalDirection() != null)
@@ -233,6 +261,8 @@ public class LayerSettings {
                 jsonWriter.name("scaffolding_bottom").value(this.data.getScaffoldingBottom());
             if (this.data.getSculkShriekerCanSummon() != null)
                 jsonWriter.name("sculk_shrieker_can_summon").value(this.data.getSculkShriekerCanSummon());
+            if (this.data.getSculkShriekerShrieking() != null)
+                jsonWriter.name("sculk_shrieker_shrieking").value(this.data.getSculkShriekerShrieking());
             if (this.data.getSculkCatalystBloom() != null)
                 jsonWriter.name("sculk_catalyst_bloom").value(this.data.getSculkCatalystBloom());
             if (this.data.getPickles() != null)
@@ -241,6 +271,8 @@ public class LayerSettings {
                 jsonWriter.name("slab_type").value(this.data.getSlabType().name().toLowerCase());
             if (this.data.getSnowLayers() != null)
                 jsonWriter.name("snow_layers").value(this.data.getSnowLayers());
+            if (this.data.getSnowy() != null)
+                jsonWriter.name("snowy").value(this.data.getSnowy());
             if (this.data.getStairsShape() != null)
                 jsonWriter.name("stairs_shape").value(this.data.getStairsShape().name().toLowerCase());
             if (this.data.getStructureBlockMode() != null)
@@ -251,14 +283,26 @@ public class LayerSettings {
                 jsonWriter.name("trial_spawner_ominous").value(this.data.getTrialSpawnerOminous());
             if (this.data.getTrialSpawnerState() != null)
                 jsonWriter.name("trial_spawner_state").value(this.data.getTrialSpawnerState().name().toLowerCase());
+            if (this.data.getVaultOminous() != null)
+                jsonWriter.name("vault_ominous").value(this.data.getVaultOminous());
             if (this.data.getVaultState() != null)
                 jsonWriter.name("vault_state").value(this.data.getVaultState().name().toLowerCase());
-            if (this.data.getTripwireHookDisarmed() != null)
-                jsonWriter.name("tripwire_hook_disarmed").value(this.data.getTripwireHookDisarmed());
+            if (this.data.getTripwireDisarmed() != null)
+                jsonWriter.name("tripwire_disarmed").value(this.data.getTripwireDisarmed());
             if (this.data.getTurtleEggs() != null)
                 jsonWriter.name("turtle_eggs").value(this.data.getTurtleEggs());
             if (this.data.getDusted() != null)
                 jsonWriter.name("dusted").value(this.data.getDusted());
+            if (this.data.getFlowerAmount() != null)
+                jsonWriter.name("flower_amount").value(this.data.getFlowerAmount());
+            if (this.data.getSegmentAmount() != null)
+                jsonWriter.name("segment_amount").value(this.data.getSegmentAmount());
+            if (this.data.getCreakingHeartState() != null)
+                jsonWriter.name("creaking_heart_state").value(this.data.getCreakingHeartState().name().toLowerCase());
+            if (this.data.getCreakingHeartActive() != null)
+                jsonWriter.name("creaking_heart_active").value(this.data.getCreakingHeartActive());
+            if (this.data.getCreakingHeartNatural() != null)
+                jsonWriter.name("creaking_heart_natural").value(this.data.getCreakingHeartNatural());
             jsonWriter.endObject();
         }
         jsonWriter.endObject();
@@ -306,7 +350,20 @@ public class LayerSettings {
                                 }
                                 jsonReader.endObject();
                             }
-                            case "redstone_wire_connections" -> {
+                            case "mossy_carpet_heights" -> {
+                                jsonReader.beginObject();
+                                while (jsonReader.hasNext()) {
+                                    String faceString = jsonReader.nextName();
+                                    String mossyCarpetHeightString = jsonReader.nextString();
+                                    try {
+                                        blockDataSettings.setMossyCarpetHeights(faceString, mossyCarpetHeightString);
+                                    } catch (Exception ex) {
+                                        logger.warning("Unknown face \"" + faceString + "\" or mossy carpet height \"" + mossyCarpetHeightString + "\", skipped!");
+                                    }
+                                }
+                                jsonReader.endObject();
+                            }
+                            case "redstone_connections" -> {
                                 jsonReader.beginObject();
                                 while (jsonReader.hasNext()) {
                                     String faceString = jsonReader.nextName();
@@ -319,6 +376,22 @@ public class LayerSettings {
                                 }
                                 jsonReader.endObject();
                             }
+                            case "faces" -> {
+                                jsonReader.beginObject();
+                                while (jsonReader.hasNext()) {
+                                    String faceString = jsonReader.nextName();
+                                    boolean faceValue = jsonReader.nextBoolean();
+                                    try {
+                                        blockDataSettings.setFaces(faceString, faceValue);
+                                    } catch (Exception ex) {
+                                        logger.warning("Unknown face \"" + faceString + "\", skipped!");
+                                    }
+                                }
+                                jsonReader.endObject();
+                            }
+                            case "wall_up" -> blockDataSettings.setWallUp(jsonReader.nextBoolean());
+                            case "mossy_carpet_bottom" ->
+                                    blockDataSettings.setMossyCarpetBottom(jsonReader.nextBoolean());
                             case "bamboo_leaves" -> {
                                 String bambooLeavesString = jsonReader.nextString();
                                 try {
@@ -465,6 +538,7 @@ public class LayerSettings {
                                 }
                             }
                             case "crafter_triggered" -> blockDataSettings.setCrafterTriggered(jsonReader.nextBoolean());
+                            case "crafter_crafting" -> blockDataSettings.setCrafterCrafting(jsonReader.nextBoolean());
                             case "ender_eye" -> blockDataSettings.setEnderEye(jsonReader.nextBoolean());
                             case "moisture" -> blockDataSettings.setMoisture(jsonReader.nextInt());
                             case "hanging" -> blockDataSettings.setHanging(jsonReader.nextBoolean());
@@ -488,7 +562,7 @@ public class LayerSettings {
                                 }
                             }
                             case "note" -> blockDataSettings.setNote(jsonReader.nextInt());
-                            case "extended" -> blockDataSettings.setExtended(jsonReader.nextBoolean());
+                            case "piston_extended" -> blockDataSettings.setExtended(jsonReader.nextBoolean());
                             case "dripstone_thickness" -> {
                                 String dripstoneThicknessString = jsonReader.nextString();
                                 try {
@@ -522,6 +596,8 @@ public class LayerSettings {
                                     blockDataSettings.setScaffoldingBottom(jsonReader.nextBoolean());
                             case "sculk_shrieker_can_summon" ->
                                     blockDataSettings.setSculkShriekerCanSummon(jsonReader.nextBoolean());
+                            case "getSculkShriekerShrieking" ->
+                                    blockDataSettings.setSculkShriekerShrieking(jsonReader.nextBoolean());
                             case "sculk_catalyst_bloom" ->
                                     blockDataSettings.setSculkCatalystBloom(jsonReader.nextBoolean());
                             case "pickles" -> blockDataSettings.setPickles(jsonReader.nextInt());
@@ -534,6 +610,7 @@ public class LayerSettings {
                                 }
                             }
                             case "snow_layers" -> blockDataSettings.setSnowLayers(jsonReader.nextInt());
+                            case "snowy" -> blockDataSettings.setSnowy(jsonReader.nextBoolean());
                             case "stairs_shape" -> {
                                 String stairsShapeString = jsonReader.nextString();
                                 try {
@@ -568,6 +645,7 @@ public class LayerSettings {
                                     logger.warning("Unknown trial spawner state \"" + trialSpawnerStateString + "\", skipped!");
                                 }
                             }
+                            case "vault_ominous" -> blockDataSettings.setVaultOminous(jsonReader.nextBoolean());
                             case "vault_state" -> {
                                 String vaultStateString = jsonReader.nextString();
                                 try {
@@ -577,9 +655,17 @@ public class LayerSettings {
                                 }
                             }
                             case "tripwire_hook_disarmed" ->
-                                    blockDataSettings.setTripwireHookDisarmed(jsonReader.nextBoolean());
+                                    blockDataSettings.setTripwireDisarmed(jsonReader.nextBoolean());
                             case "turtle_eggs" -> blockDataSettings.setTurtleEggs(jsonReader.nextInt());
                             case "dusted" -> blockDataSettings.setDusted(jsonReader.nextInt());
+                            case "flower_amount" -> blockDataSettings.setFlowerAmount(jsonReader.nextInt());
+                            case "segment_amount" -> blockDataSettings.setSegmentAmount(jsonReader.nextInt());
+                            case "creaking_heart_state" ->
+                                    blockDataSettings.setCreakingHeartState(jsonReader.nextString());
+                            case "creaking_heart_active" ->
+                                    blockDataSettings.setCreakingHeartActive(jsonReader.nextBoolean());
+                            case "creaking_heart_natural" ->
+                                    blockDataSettings.setCreakingHeartNatural(jsonReader.nextBoolean());
                             default -> jsonReader.skipValue();
                         }
                     }

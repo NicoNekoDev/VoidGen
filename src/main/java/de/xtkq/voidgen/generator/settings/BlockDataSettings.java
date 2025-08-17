@@ -10,6 +10,7 @@ import org.bukkit.material.Colorable;
 import org.bukkit.material.Crops;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,72 @@ import java.util.Map;
 @Getter
 @Setter
 public class BlockDataSettings {
+    private final Class<?> FLOWED_BED_CLASS;
+    private final Class<?> LEAF_LITTER_CLASS;
+    private final Class<?> CREAKING_HEART_CLASS;
+    private final Class<? extends Enum<?>> CREAKING_HEART_STATE_CLASS;
+    private final Class<?> MOSSY_CARPET_CLASS;
+    private final Class<? extends Enum<?>> MOSSY_CARPET_HEIGHT_CLASS;
+
+    @SuppressWarnings("unchecked")
+    public BlockDataSettings() {
+        Class<?> flowedBedClassVar;
+        try {
+            flowedBedClassVar = Class.forName("org.bukkit.block.data.type.FlowedBed");
+        } catch (Exception e) {
+            flowedBedClassVar = null;
+        }
+        this.FLOWED_BED_CLASS = flowedBedClassVar;
+        Class<?> leafLitterClassVar;
+        try {
+            leafLitterClassVar = Class.forName("org.bukkit.block.data.type.LeafLitter");
+        } catch (Exception e) {
+            leafLitterClassVar = null;
+        }
+        this.LEAF_LITTER_CLASS = leafLitterClassVar;
+        Class<?> creakingHeartClassVar;
+        try {
+            creakingHeartClassVar = Class.forName("org.bukkit.block.data.type.CreakingHeart");
+        } catch (Exception e) {
+            creakingHeartClassVar = null;
+        }
+        this.CREAKING_HEART_CLASS = creakingHeartClassVar;
+        Class<? extends Enum<?>> creakingHeartStateClassVar;
+        try {
+            creakingHeartStateClassVar = (Class<? extends Enum<?>>) Class.forName("org.bukkit.block.data.type.CreakingHeart$State");
+        } catch (Exception e) {
+            creakingHeartStateClassVar = null;
+        }
+        this.CREAKING_HEART_STATE_CLASS = creakingHeartStateClassVar;
+        Class<?> mossyCarpetClassVar;
+        try {
+            mossyCarpetClassVar = Class.forName("org.bukkit.block.data.type.MossyCarpet");
+        } catch (Exception e) {
+            mossyCarpetClassVar = null;
+        }
+        this.MOSSY_CARPET_CLASS = mossyCarpetClassVar;
+        Class<? extends Enum<?>> mossyCarpetHeightClassVar;
+        try {
+            mossyCarpetHeightClassVar = (Class<? extends Enum<?>>) Class.forName("org.bukkit.block.data.type.MossyCarpet$Height");
+        } catch (Exception e) {
+            mossyCarpetHeightClassVar = null;
+        }
+        this.MOSSY_CARPET_HEIGHT_CLASS = mossyCarpetHeightClassVar;
+    }
+
+    @Nullable
+    private Map<BlockFace, Boolean> faces;
+
+    public void applyFaces(BlockData blockData) {
+        if (blockData instanceof MultipleFacing instance && this.faces != null)
+            this.faces.forEach(instance::setFace);
+    }
+
+    public void setFaces(String faceString, boolean value) throws IllegalArgumentException {
+        if (this.faces == null)
+            this.faces = new HashMap<>();
+        this.faces.put(BlockFace.valueOf(faceString.toUpperCase()), value);
+    }
 
     @Nullable
     private Map<BlockFace, Wall.Height> wallHeights;
@@ -679,6 +746,14 @@ public class BlockDataSettings {
     }
 
     @Nullable
+    private Boolean vaultOminous;
+
+    public void applyVaultOminous(BlockData blockData) {
+        if (blockData instanceof Vault instance && this.vaultOminous != null)
+            instance.setOminous(this.vaultOminous);
+    }
+
+    @Nullable
     private Vault.State vaultState;
 
     public void applyVaultState(BlockData blockData) {
@@ -691,11 +766,11 @@ public class BlockDataSettings {
     }
 
     @Nullable
-    private Boolean tripwireHookDisarmed;
+    private Boolean tripwireDisarmed;
 
-    public void applyTripwireHookDisarmed(BlockData blockData) {
-        if (blockData instanceof Tripwire instance && this.tripwireHookDisarmed != null)
-            instance.setDisarmed(this.tripwireHookDisarmed);
+    public void applyTripwireDisarmed(BlockData blockData) {
+        if (blockData instanceof Tripwire instance && this.tripwireDisarmed != null)
+            instance.setDisarmed(this.tripwireDisarmed);
     }
 
     @Nullable
@@ -712,5 +787,113 @@ public class BlockDataSettings {
     public void applyDusted(BlockData blockData) {
         if (blockData instanceof Brushable instance && this.dusted != null)
             instance.setDusted(this.dusted);
+    }
+
+    @Nullable
+    private Integer flowerAmount;
+
+    public void applyFlowerAmount(BlockData blockData) {
+        if (this.FLOWED_BED_CLASS != null && this.FLOWED_BED_CLASS.isInstance(blockData) && this.flowerAmount != null) {
+            try {
+                this.FLOWED_BED_CLASS.getMethod("setFlowerAmount", int.class).invoke(blockData, this.flowerAmount);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Nullable
+    private Integer segmentAmount;
+
+    public void applySegmentAmount(BlockData blockData) {
+        if (this.LEAF_LITTER_CLASS != null && this.LEAF_LITTER_CLASS.isInstance(blockData) && this.segmentAmount != null) {
+            try {
+                this.LEAF_LITTER_CLASS.getMethod("setSegmentAmount", int.class).invoke(blockData, this.segmentAmount);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Nullable
+    private Enum<?> creakingHeartState;
+
+    public void applyCreakingHeartState(BlockData blockData) {
+        if (this.CREAKING_HEART_CLASS != null && this.CREAKING_HEART_CLASS.isInstance(blockData) && this.creakingHeartState != null) {
+            try {
+                this.CREAKING_HEART_CLASS.getMethod("setState", Enum.class).invoke(blockData, this.creakingHeartState);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void setCreakingHeartState(String creakingHeartStateString) throws IllegalArgumentException {
+        if (this.CREAKING_HEART_STATE_CLASS != null)
+            this.creakingHeartState = Enum.valueOf((Class) this.CREAKING_HEART_STATE_CLASS, creakingHeartStateString.toUpperCase());
+    }
+
+    @Nullable
+    private Boolean creakingHeartActive;
+
+    public void applyCreakingHeartActive(BlockData blockData) {
+        if (this.CREAKING_HEART_CLASS != null && this.CREAKING_HEART_CLASS.isInstance(blockData) && this.creakingHeartActive != null) {
+            try {
+                this.CREAKING_HEART_CLASS.getMethod("setActive", boolean.class).invoke(blockData, this.creakingHeartActive);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Nullable
+    private Boolean creakingHeartNatural;
+
+    public void applyCreakingHeartNatural(BlockData blockData) {
+        if (this.CREAKING_HEART_CLASS != null && this.CREAKING_HEART_CLASS.isInstance(blockData) && this.creakingHeartNatural != null) {
+            try {
+                this.CREAKING_HEART_CLASS.getMethod("setNatural", boolean.class).invoke(blockData, this.creakingHeartNatural);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Nullable
+    private Map<BlockFace, Enum<?>> mossyCarpetHeights;
+
+    public void applyMossyCarpetHeights(BlockData blockData) {
+        if (this.MOSSY_CARPET_CLASS != null && this.MOSSY_CARPET_CLASS.isInstance(blockData) && this.mossyCarpetHeights != null) {
+            try {
+                Method setHeightMethod = this.MOSSY_CARPET_CLASS.getMethod("setHeight", BlockFace.class, this.MOSSY_CARPET_HEIGHT_CLASS);
+                for (Map.Entry<BlockFace, Enum<?>> entry : this.mossyCarpetHeights.entrySet())
+                    setHeightMethod.invoke(blockData, entry.getKey(), entry.getValue());
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void setMossyCarpetHeights(String faceString, String mossyCarpetHeightString) throws IllegalArgumentException {
+        if (this.mossyCarpetHeights == null)
+            this.mossyCarpetHeights = new HashMap<>();
+        if (this.MOSSY_CARPET_HEIGHT_CLASS != null)
+            this.mossyCarpetHeights.put(BlockFace.valueOf(faceString.toUpperCase()), Enum.valueOf((Class) this.MOSSY_CARPET_HEIGHT_CLASS, mossyCarpetHeightString.toUpperCase()));
+    }
+
+    @Nullable
+    private Boolean wallUp;
+
+    public void applyWallUp(BlockData blockData) {
+        if (blockData instanceof Wall instance && this.wallUp != null)
+            instance.setUp(this.wallUp);
+    }
+
+    @Nullable
+    private Boolean mossyCarpetBottom;
+
+    public void applyMossyCarpetBottom(BlockData blockData) {
+        if (this.MOSSY_CARPET_CLASS != null && this.MOSSY_CARPET_CLASS.isInstance(blockData) && this.mossyCarpetHeights != null) {
+            try {
+                this.MOSSY_CARPET_CLASS.getMethod("setBottom", boolean.class).invoke(blockData, this.mossyCarpetBottom);
+            } catch (Exception ignored) {
+            }
+        }
     }
 }
