@@ -1,10 +1,10 @@
 # Tutorial Section
 
-- Step 0 - [Where to put the plugin?](#Where-to-put-the-plugin)
-- Step 1 - [Setup of the bukkit.yml file](#Setup-of-the-bukkityml-file)
-- Step 2 - [Validating json parameters](#Validating-parameters)
-- Step 3 - [Restart](#Restart)
-- [Parameters](#Parameters)
+- Step 0 - [Where to put the plugin?](#where-to-put-the-plugin)
+- Step 1 - [Setup of the bukkit.yml file](#setup-of-the-bukkityml-file)
+- Step 2 - [Setup parameters](#parameters)
+- Step 3 - [Validating json parameters](#validating-parameters)
+- Step 4 - [Restart](#restart)
 
 ## Where to put the plugin?
 
@@ -122,8 +122,7 @@ Order of the layers matters!
 
 ## Block data
 
-The block data represents the state of the block.
-
+The block data represents the state of the block.<br>You can find which block has which data in the [Minecraft Wiki](https://minecraft.wiki/w/Block_states#List_of_block_states).
 ### Simple values
 
 Example of a simple block data:
