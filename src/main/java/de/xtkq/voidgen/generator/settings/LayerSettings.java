@@ -35,6 +35,7 @@ public class LayerSettings {
         BlockData blockData = this.material.createBlockData();
         if (this.data == null)
             return blockData;
+        this.data.applyBambooLeaves(blockData);
         this.data.applyFaces(blockData);
         this.data.applyWallHeight(blockData);
         this.data.applyMossyCarpetHeights(blockData);
@@ -660,8 +661,14 @@ public class LayerSettings {
                             case "dusted" -> blockDataSettings.setDusted(jsonReader.nextInt());
                             case "flower_amount" -> blockDataSettings.setFlowerAmount(jsonReader.nextInt());
                             case "segment_amount" -> blockDataSettings.setSegmentAmount(jsonReader.nextInt());
-                            case "creaking_heart_state" ->
-                                    blockDataSettings.setCreakingHeartState(jsonReader.nextString());
+                            case "creaking_heart_state" -> {
+                                String creakingHeartStateString = jsonReader.nextString();
+                                try {
+                                    blockDataSettings.setCreakingHeartState(creakingHeartStateString);
+                                } catch (Exception ex) {
+                                    logger.warning("Unknown creaking heart state \"" + creakingHeartStateString + "\", skipped!");
+                                }
+                            }
                             case "creaking_heart_active" ->
                                     blockDataSettings.setCreakingHeartActive(jsonReader.nextBoolean());
                             case "creaking_heart_natural" ->
