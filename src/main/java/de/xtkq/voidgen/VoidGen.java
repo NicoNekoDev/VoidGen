@@ -4,7 +4,8 @@ import com.tcoded.folialib.FoliaLib;
 import de.xtkq.voidgen.events.EventManager;
 import de.xtkq.voidgen.generator.annotations.VoidChunkGenInfo;
 import de.xtkq.voidgen.generator.instances.*;
-import de.xtkq.voidgen.settings.ConfigManager;
+import de.xtkq.voidgen.settings.Settings;
+import de.xtkq.voidgen.settings.SettingsManager;
 import de.xtkq.voidgen.utils.MetricsUtils;
 import de.xtkq.voidgen.utils.UpdateUtils;
 import lombok.Getter;
@@ -42,16 +43,17 @@ public final class VoidGen extends JavaPlugin {
         this.chunkGenVersion = this.setupVoidChunkGen();
         this.getLogger().info("Using VoidChunkGen: " + this.chunkGenVersion.name());
 
-        ConfigManager configManager = new ConfigManager(this);
+        SettingsManager.load(this);
+
         UpdateUtils updateUtils = new UpdateUtils(this);
         this.eventManager = new EventManager(this);
 
-        if (configManager.getConfiguration().getCheckForUpdates()) {
+        if (Settings.CHECK_FOR_UPDATES.get()) {
             updateUtils.checkForUpdates();
             this.eventManager.initialize();
         }
 
-        if (configManager.getConfiguration().getMetrics()) {
+        if (Settings.ENABLE_METRICS.get()) {
             new MetricsUtils(this, 26816);
         }
     }

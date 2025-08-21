@@ -2,6 +2,7 @@ package de.xtkq.voidgen.generator.interfaces;
 
 import com.google.gson.*;
 import de.xtkq.voidgen.generator.settings.ChunkGenSettings;
+import de.xtkq.voidgen.settings.Settings;
 import de.xtkq.voidgen.utils.ChunkGenAdapter;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -23,26 +24,33 @@ public abstract class ChunkGen extends ChunkGenerator {
         builder.registerTypeAdapter(ChunkGenSettings.class, new ChunkGenAdapter(this.javaPlugin));
         builder.setStrictness(Strictness.LENIENT);
         Gson gson = builder.create();
-        this.javaPlugin.getLogger().info("");
-        this.javaPlugin.getLogger().info("> ——————————————————————[ " + worldName + " ]——————————————————————");
-        this.javaPlugin.getLogger().info("> ");
+        // Posting the currently used chunkGenSettings to console.
+        if (Settings.ENABLE_VERBOSE.get()) {
+            this.javaPlugin.getLogger().info("");
+            this.javaPlugin.getLogger().info("> ——————————————————————[ " + worldName + " ]——————————————————————");
+            this.javaPlugin.getLogger().info("> ");
+        }
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
             this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
-            this.javaPlugin.getLogger().info("> Generator settings have not been set, we will use the default settings:");
+            if (Settings.ENABLE_VERBOSE.get())
+                this.javaPlugin.getLogger().info("> Generator settings have not been set, we will use the default settings:");
         } else {
             try {
                 this.chunkGenSettings = gson.fromJson(paramIdentifier, ChunkGenSettings.class);
-                this.javaPlugin.getLogger().info("> Generator settings have been loaded:");
+                if (Settings.ENABLE_VERBOSE.get())
+                    this.javaPlugin.getLogger().info("> Generator settings have been loaded:");
             } catch (JsonSyntaxException jse) {
                 this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
-                this.javaPlugin.getLogger().info("> Generator settings syntax is not valid, we will use the default settings:");
+                if (Settings.ENABLE_VERBOSE.get())
+                    this.javaPlugin.getLogger().info("> Generator settings syntax is not valid, we will use the default settings:");
             }
         }
-        // Posting the currently used chunkGenSettings to console.
-        this.javaPlugin.getLogger().info("> " + gson.toJson(this.chunkGenSettings));
-        this.javaPlugin.getLogger().info("> ");
-        this.javaPlugin.getLogger().info("> ——————————————————————[ " + worldName + " ]——————————————————————");
-        this.javaPlugin.getLogger().info("");
+        if (Settings.ENABLE_VERBOSE.get()) {
+            this.javaPlugin.getLogger().info("> " + gson.toJson(this.chunkGenSettings));
+            this.javaPlugin.getLogger().info("> ");
+            this.javaPlugin.getLogger().info("> ——————————————————————[ " + worldName + " ]——————————————————————");
+            this.javaPlugin.getLogger().info("");
+        }
     }
 
     public abstract Biome getDefaultBiome();
