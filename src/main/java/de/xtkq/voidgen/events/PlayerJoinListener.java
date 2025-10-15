@@ -7,21 +7,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.concurrent.TimeUnit;
 
-public class PlayerLoginListener implements Listener {
+public class PlayerJoinListener implements Listener {
 
     private final VoidGen voidGen;
 
-    public PlayerLoginListener(VoidGen voidGen) {
+    public PlayerJoinListener(VoidGen voidGen) {
         this.voidGen = voidGen;
         this.voidGen.getServer().getPluginManager().registerEvents(this, voidGen);
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerLogin(PlayerLoginEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (UpdateUtils.isUpdateAvailable()) {
             if (player.isOp()) {
