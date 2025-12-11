@@ -27,7 +27,7 @@ public final class VoidChunkGen_1_17_1 extends ChunkGen {
 
     @Override
     public BiomeProvider getDefaultBiomeProvider(@NotNull WorldInfo worldInfo) {
-        return new VoidBiomeProvider(this.chunkGenSettings.getBiome());
+        return this.chunkGenSettings.getBiome().map(biome -> (BiomeProvider) new VoidBiomeProvider(biome)).orElse(super.getDefaultBiomeProvider(worldInfo));
     }
 
     @SuppressWarnings("deprecation")
@@ -36,8 +36,8 @@ public final class VoidChunkGen_1_17_1 extends ChunkGen {
     public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid paramBiomeGrid) {
         ChunkData chunkData = this.createChunkData(world);
         int yOffset = 0;
-        if (this.chunkGenSettings.getLayers() != null) {
-            for (LayerSettings layer : this.chunkGenSettings.getLayers()) {
+        if (this.chunkGenSettings.getLayers().isPresent()) {
+            for (LayerSettings layer : this.chunkGenSettings.getLayers().get()) {
                 for (int y = 0; y < layer.getHeight(); y++) {
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
@@ -47,7 +47,7 @@ public final class VoidChunkGen_1_17_1 extends ChunkGen {
                     yOffset++;
                 }
             }
-        } else if (this.chunkGenSettings.isBedrock())
+        } else if (this.chunkGenSettings.getBedrock().orElse(false))
             super.generateBedrock(world, random, chunkX, chunkZ, chunkData);
         return chunkData;
     }

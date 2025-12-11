@@ -24,21 +24,27 @@ public class MappedStringSetting extends Setting<Map<String, String>> {
 
     @Override
     public final MappedStringSetting load(ConfigurationSection section, boolean firstTime, Logger logger) {
-        if (section.isConfigurationSection(super.key)) {
-            section = section.getConfigurationSection(super.key);
+        ConfigurationSection upperSection = section.getConfigurationSection(super.key);
+        if (upperSection != null) {
             this.value = new HashMap<>();
-            for (String key : section.getKeys(false))
-                if (section.isString(key))
-                    this.value.put(key, section.getString(key));
+            for (String key : upperSection.getKeys(false))
+                if (upperSection.isString(key))
+                    this.value.put(key, upperSection.getString(key));
         } else {
             if (!firstTime)
                 logger.info("Mapped strings at key: " + section.getCurrentPath() + super.key + " doesn't exists, creating...");
-            section = section.createSection(super.key);
-            this.value = super.defaultValue;
-            for (Map.Entry<String, String> entry : super.defaultValue.entrySet())
-                section.set(entry.getKey(), entry.getValue());
-            return this;
+            this.setup(section);
         }
         return this;
+    }
+
+    @Override
+    protected void setup(ConfigurationSection section) {
+        ConfigurationSection upperSection = section.createSection(super.key);
+        for (Map.Entry<String, String> entry : this.defaultValue.entrySet())
+            upperSection.set(entry.getKey(), entry.getValue());
+        this.value = super.defaultValue;
+        if (!super.comments.isEmpty()) upperSection.setComments(super.key, super.comments);
+        if (!super.inlineComments.isEmpty()) upperSection.setInlineComments(super.key, super.inlineComments);
     }
 }

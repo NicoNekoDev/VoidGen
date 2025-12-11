@@ -11,10 +11,11 @@ public abstract class ChunkGen2D extends ChunkGen implements IChunkGenBiomeGrid 
     @SuppressWarnings("deprecation")
     @Override
     public void setBiomeGrid(BiomeGrid paramBiomeGrid, ChunkData paramChunkData) {
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                paramBiomeGrid.setBiome(x, z, this.chunkGenSettings.getBiome());
+        if (this.chunkGenSettings.getBiome().isPresent())
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    paramBiomeGrid.setBiome(x, z, this.chunkGenSettings.getBiome().get());
+                }
             }
-        }
     }
 }

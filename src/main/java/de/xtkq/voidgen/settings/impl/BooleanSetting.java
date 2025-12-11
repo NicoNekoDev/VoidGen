@@ -36,8 +36,16 @@ public class BooleanSetting extends Setting<Boolean> {
         } else {
             if (!firstTime)
                 logger.info("Boolean at key: " + section.getCurrentPath() + super.key + " doesn't exists, creating...");
-            super.setup(section);
+            this.setup(section);
         }
         return this;
+    }
+
+    @Override
+    protected void setup(ConfigurationSection section) {
+        section.set(this.key, this.defaultValue ? "yes" : "no");
+        if (!this.comments.isEmpty()) section.setComments(this.key, this.comments);
+        if (!this.inlineComments.isEmpty()) section.setInlineComments(this.key, this.inlineComments);
+        this.value = this.defaultValue;
     }
 }

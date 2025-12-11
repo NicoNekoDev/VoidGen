@@ -31,7 +31,7 @@ public abstract class ChunkGen extends ChunkGenerator {
             this.javaPlugin.getLogger().info("> ");
         }
         if (paramIdentifier == null || paramIdentifier.isBlank()) {
-            this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
+            this.chunkGenSettings = new ChunkGenSettings().setBiome(this.getDefaultBiome());
             if (Settings.ENABLE_VERBOSE.get())
                 this.javaPlugin.getLogger().info("> Generator settings have not been set, we will use the default settings:");
         } else {
@@ -40,7 +40,7 @@ public abstract class ChunkGen extends ChunkGenerator {
                 if (Settings.ENABLE_VERBOSE.get())
                     this.javaPlugin.getLogger().info("> Generator settings have been loaded:");
             } catch (JsonSyntaxException jse) {
-                this.chunkGenSettings = new ChunkGenSettings(this.getDefaultBiome());
+                this.chunkGenSettings = new ChunkGenSettings().setBiome(this.getDefaultBiome());
                 if (Settings.ENABLE_VERBOSE.get())
                     this.javaPlugin.getLogger().info("> Generator settings syntax is not valid, we will use the default settings:");
             }
@@ -62,38 +62,38 @@ public abstract class ChunkGen extends ChunkGenerator {
 
     @Override
     public boolean shouldGenerateCaves() {
-        return this.chunkGenSettings.isCaves();
+        return this.chunkGenSettings.getCaves().orElse(false);
     }
 
     @Override
     public boolean shouldGenerateDecorations() {
-        return this.chunkGenSettings.isDecoration();
+        return this.chunkGenSettings.getDecoration().orElse(false);
     }
 
     @Override
     public boolean shouldGenerateMobs() {
-        return this.chunkGenSettings.isMobs();
+        return this.chunkGenSettings.getMobs().orElse(false);
     }
 
     @Override
     public boolean shouldGenerateStructures() {
-        return this.chunkGenSettings.isStructures();
+        return this.chunkGenSettings.getStructures().orElse(false);
     }
 
     @Override
     public boolean shouldGenerateNoise() {
-        return this.chunkGenSettings.isNoise();
+        return this.chunkGenSettings.getNoise().orElse(false);
     }
 
     @Override
     public boolean shouldGenerateSurface() {
-        return this.chunkGenSettings.isSurface();
+        return this.chunkGenSettings.getSurface().orElse(false);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public boolean shouldGenerateBedrock() {
-        return this.chunkGenSettings.isBedrock();
+        return this.chunkGenSettings.getBedrock().orElse(false);
     }
 
     @Override

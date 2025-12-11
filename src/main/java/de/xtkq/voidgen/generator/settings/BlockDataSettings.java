@@ -24,6 +24,8 @@ public class BlockDataSettings {
     private final Class<? extends Enum<?>> CREAKING_HEART_STATE_CLASS;
     private final Class<?> MOSSY_CARPET_CLASS;
     private final Class<? extends Enum<?>> MOSSY_CARPET_HEIGHT_CLASS;
+    private final Class<?> COPPER_GOLEM_STATUE_CLASS;
+    private final Class<? extends Enum<?>> COPPER_GOLEM_POSE_CLASS;
 
     @SuppressWarnings("unchecked")
     public BlockDataSettings() {
@@ -69,6 +71,20 @@ public class BlockDataSettings {
             mossyCarpetHeightClassVar = null;
         }
         this.MOSSY_CARPET_HEIGHT_CLASS = mossyCarpetHeightClassVar;
+        Class<?> copperGolemStatueClassVar;
+        try {
+            copperGolemStatueClassVar = Class.forName("org.bukkit.block.data.type.CopperGolemStatue");
+        } catch (Exception e) {
+            copperGolemStatueClassVar = null;
+        }
+        this.COPPER_GOLEM_STATUE_CLASS = copperGolemStatueClassVar;
+        Class<? extends Enum<?>> copperGolemPoseClassVar;
+        try {
+            copperGolemPoseClassVar = (Class<? extends Enum<?>>) Class.forName("org.bukkit.block.data.type.CopperGolemStatue$CopperGolemPose");
+        } catch (Exception e) {
+            copperGolemPoseClassVar = null;
+        }
+        this.COPPER_GOLEM_POSE_CLASS = copperGolemPoseClassVar;
     }
 
     @Nullable
@@ -895,5 +911,23 @@ public class BlockDataSettings {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    @Nullable
+    private Enum<?> copperGolemPose;
+
+    public void applyCopperGolemPose(BlockData blockData) {
+        if (this.COPPER_GOLEM_STATUE_CLASS != null && this.COPPER_GOLEM_STATUE_CLASS.isInstance(blockData) && this.copperGolemPose != null) {
+            try {
+                this.COPPER_GOLEM_STATUE_CLASS.getMethod("setCopperGolemPose", Enum.class).invoke(blockData, this.copperGolemPose);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void setCopperGolemPose(String copperGolemPose) throws IllegalArgumentException {
+        if (this.COPPER_GOLEM_STATUE_CLASS != null)
+            this.copperGolemPose = Enum.valueOf((Class) this.COPPER_GOLEM_STATUE_CLASS, copperGolemPose.toUpperCase());
     }
 }
