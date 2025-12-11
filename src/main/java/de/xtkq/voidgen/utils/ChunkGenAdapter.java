@@ -22,24 +22,25 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
     @Override
     public void write(JsonWriter jsonWriter, ChunkGenSettings chunkGenSettings) throws IOException {
         jsonWriter.beginObject();
-        jsonWriter.name("biome").value(chunkGenSettings.getBiome().name().toLowerCase());
-        if (chunkGenSettings.isCaves())
-            jsonWriter.name("caves").value(chunkGenSettings.isCaves());
-        if (chunkGenSettings.isDecoration())
-            jsonWriter.name("decoration").value(chunkGenSettings.isDecoration());
-        if (chunkGenSettings.isMobs())
-            jsonWriter.name("mobs").value(chunkGenSettings.isMobs());
-        if (chunkGenSettings.isStructures())
-            jsonWriter.name("structures").value(chunkGenSettings.isStructures());
-        if (chunkGenSettings.isNoise())
-            jsonWriter.name("noise").value(chunkGenSettings.isNoise());
-        if (chunkGenSettings.isSurface())
-            jsonWriter.name("surface").value(chunkGenSettings.isSurface());
-        if (chunkGenSettings.isBedrock())
-            jsonWriter.name("bedrock").value(chunkGenSettings.isBedrock());
-        if (chunkGenSettings.getLayers() != null) {
+        if (chunkGenSettings.getBiome().isPresent())
+            jsonWriter.name("biome").value(chunkGenSettings.getBiome().get().name().toLowerCase());
+        if (chunkGenSettings.getCaves().isPresent())
+            jsonWriter.name("caves").value(chunkGenSettings.getCaves().get());
+        if (chunkGenSettings.getDecoration().isPresent())
+            jsonWriter.name("decoration").value(chunkGenSettings.getDecoration().get());
+        if (chunkGenSettings.getMobs().isPresent())
+            jsonWriter.name("mobs").value(chunkGenSettings.getMobs().get());
+        if (chunkGenSettings.getStructures().isPresent())
+            jsonWriter.name("structures").value(chunkGenSettings.getStructures().get());
+        if (chunkGenSettings.getNoise().isPresent())
+            jsonWriter.name("noise").value(chunkGenSettings.getNoise().get());
+        if (chunkGenSettings.getSurface().isPresent())
+            jsonWriter.name("surface").value(chunkGenSettings.getSurface().get());
+        if (chunkGenSettings.getBedrock().isPresent())
+            jsonWriter.name("bedrock").value(chunkGenSettings.getBedrock().get());
+        if (chunkGenSettings.getLayers().isPresent()) {
             jsonWriter.name("layers").beginArray();
-            for (LayerSettings layerSettings : chunkGenSettings.getLayers())
+            for (LayerSettings layerSettings : chunkGenSettings.getLayers().get())
                 layerSettings.write(jsonWriter);
             jsonWriter.endArray();
         }
@@ -48,7 +49,7 @@ public class ChunkGenAdapter extends TypeAdapter<ChunkGenSettings> {
 
     @Override
     public ChunkGenSettings read(JsonReader jsonReader) throws IOException {
-        ChunkGenSettings chunkGenSettings = new ChunkGenSettings(Biome.THE_VOID);
+        ChunkGenSettings chunkGenSettings = new ChunkGenSettings();
         jsonReader.beginObject();
         while (jsonReader.hasNext()) {
             switch (jsonReader.nextName()) {
