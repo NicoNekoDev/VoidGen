@@ -117,6 +117,7 @@ public class LayerSettings {
         this.data.applyCreakingHeartState(blockData);
         this.data.applyCreakingHeartActive(blockData);
         this.data.applyCreakingHeartNatural(blockData);
+        this.data.applyCopperGolemPose(blockData);
         return blockData;
     }
 
@@ -304,6 +305,8 @@ public class LayerSettings {
                 jsonWriter.name("creaking_heart_active").value(this.data.getCreakingHeartActive());
             if (this.data.getCreakingHeartNatural() != null)
                 jsonWriter.name("creaking_heart_natural").value(this.data.getCreakingHeartNatural());
+            if (this.data.getCopperGolemPose() != null)
+                jsonWriter.name("copper_golem_pose").value(this.data.getCopperGolemPose().name().toLowerCase());
             jsonWriter.endObject();
         }
         jsonWriter.endObject();
@@ -673,6 +676,14 @@ public class LayerSettings {
                                     blockDataSettings.setCreakingHeartActive(jsonReader.nextBoolean());
                             case "creaking_heart_natural" ->
                                     blockDataSettings.setCreakingHeartNatural(jsonReader.nextBoolean());
+                            case "copper_golem_pose" -> {
+                                String copperGolemPoseString = jsonReader.nextString();
+                                try {
+                                    blockDataSettings.setCopperGolemPose(copperGolemPoseString);
+                                } catch (Exception ex) {
+                                    logger.warning("Unknown copper golem pose \"" + copperGolemPoseString + "\", skipped!");
+                                }
+                            }
                             default -> jsonReader.skipValue();
                         }
                     }
