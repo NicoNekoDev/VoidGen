@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-@VoidChunkGenInfo(versions = {"26.1"})
+@VoidChunkGenInfo(versions = {"26.1", "26.1.1"})
 public final class VoidChunkGen_26_1 extends ChunkGen {
 
     public VoidChunkGen_26_1(JavaPlugin javaPlugin, String paramIdentifier, String worldName) {
