@@ -42,7 +42,10 @@ public final class VoidGen extends JavaPlugin {
     public void onEnable() {
         this.foliaLib = new FoliaLib(this);
         this.chunkGenVersion = this.setupVoidChunkGen();
-        this.getLogger().info("Using VoidChunkGen: " + this.chunkGenVersion.name());
+        if (this.chunkGenVersion == ChunkGenVersion.VERSION_UNKNOWN)
+            this.getLogger().info("Using an unknown version of VoidGen! It will switch to latest version build for.");
+        else
+            this.getLogger().info("Using VoidChunkGen: " + this.chunkGenVersion.name());
 
         SettingsManager.load(this);
 
