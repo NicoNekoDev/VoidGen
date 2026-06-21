@@ -51,7 +51,7 @@ json syntax.
 Restart your server for all the changes to take effect. If you configured everything correctly, the generator will work
 in all newly created chunks. <br>
 If you find any bug, have crashed because of the plugin or are still experiencing issues, please report it at
-my [official Discord server](https://discord.gg/Q7yj32FMFh).
+my [official Discord server](https://discord.gg/PPCBUsE3JC).
 
 # Parameters
 
