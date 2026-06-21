@@ -1,7 +1,7 @@
 <p align="center">
     <img src="docs/assets/Logo.svg" width=50%>
     <br>
-    <a href="https://discord.gg/Q7yj32FMFh"><img src="https://img.shields.io/discord/681986370214166548?label=Discord&logo=discord"></a>   
+    <a href="https://discord.gg/PPCBUsE3JC"><img src="https://img.shields.io/discord/681986370214166548?label=Discord&logo=discord"></a>   
     <a href="https://www.codefactor.io/repository/github/niconekodev/voidgen"><img src="https://img.shields.io/codefactor/grade/github/NicoNekoDev/VoidGen"></a>
     <a href="https://github.com/NicoNekoDev/VoidGen/releases/latest"><img src="https://img.shields.io/github/v/release/NicoNekoDev/VoidGen?label=release&color=success"></a>
     <a href="https://github.com/NicoNekoDev/VoidGen/releases/latest"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/NicoNekoDev/VoidGen/total"></a>    
@@ -12,7 +12,7 @@
 
 VoidGen is a Minecraft plugin that enables server owners to create countless custom void worlds with a powerful and
 lightweight generator system. The plugin is made to handle all aspects of how you create void worlds. If you find any bug or have crashed because of the plugin, please report it at
-my [official Discord server](https://discord.gg/Q7yj32FMFh).
+my [official Discord server](https://discord.gg/PPCBUsE3JC).
 
 ## How To
 
