@@ -24,7 +24,7 @@ we want the plugin to generate. Just replace the placeholders *worldname_1* and 
 names. The list can be extended for however many world you want to use:
 
     worlds:
-      worldname_1:
+      worldname_1: # Replace the placeholders to your world names (examples: world, world_nether, world_the_end)
         generator: VoidGen
       worldname_2:
         generator: VoidGen
