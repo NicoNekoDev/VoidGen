@@ -43,8 +43,18 @@ specifying it at all. Chaining multiple parameters together can be done with *co
 
 You need to make sure that your parameters are valid. The plugin will try it's best to understand your json syntax and
 validate it, but there might be some edge cases that will cause the plugin to not work correctly, and the default
-parameters will be used instead. <br> Use this [website](https://jsonformatter.curiousconcept.com/) to validate your
+parameters will be used instead. <br> Use this [website](https://jsonchecker.com/) to validate your
 json syntax.
+
+#### Issues
+
+Do not add `VoidGen:` part to the parser, nor anything related to yaml, it will cause issues:
+<img width="1016" height="512" alt="{8B42AF55-3BF1-4873-A318-0353795F167F}" src="https://github.com/user-attachments/assets/c6a31900-85e5-4f19-85f7-352d8be15e86" />
+
+Here's the correct way if a json syntax is valid:
+<img width="1016" height="432" alt="{8535D3CA-8347-4654-8739-A3DAAFE8AC48}" src="https://github.com/user-attachments/assets/5ff168e9-921c-4a6a-9c05-2f08cdc31dbe" />
+
+
 
 ## Restart
 
